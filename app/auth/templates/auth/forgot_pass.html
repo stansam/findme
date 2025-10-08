@@ -1,0 +1,68 @@
+{% extends "auth/base.html" %}
+
+{% block title %}FindMe - Forgot Password{% endblock %}
+
+{% block subtitle %}Reset your password{% endblock %}
+
+{% block extra_css %}
+<link href="{{url_for('auth.static', filename='auth/css/forgot_pass.css')}}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div id="forgot-form-container">
+    <div class="card-header">
+        <i class="fas fa-key"></i>
+        <h2>Forgot Password?</h2>
+        <p>No worries! Enter your email address and we'll send you a link to reset your password.</p>
+    </div>
+
+    <form id="forgot-password-form">
+        <div class="form-group">
+            <label class="form-label">
+                <span class="required">*</span> Email Address
+            </label>
+            <div class="input-group">
+                <input type="email" name="email" class="form-input" placeholder="your@email.com" required autofocus>
+                <i class="fas fa-envelope input-icon"></i>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-paper-plane"></i> Send Reset Link
+        </button>
+    </form>
+
+    <div class="info-box">
+        <i class="fas fa-info-circle"></i>
+        <div class="info-box-content">
+            <div class="info-box-title">Didn't receive the email?</div>
+            <div class="info-box-text">
+                Check your spam folder or wait a few minutes and try again. Make sure you entered the correct email address.
+            </div>
+        </div>
+    </div>
+
+    <div class="back-link">
+        <a href="/auth" class="link">
+            <i class="fas fa-arrow-left"></i> Back to Login
+        </a>
+    </div>
+</div>
+
+<div id="success-message" class="success-message">
+    <i class="fas fa-check-circle success-icon"></i>
+    <div class="success-title">Check Your Email!</div>
+    <div class="success-text">
+        We've sent a password reset link to your email address. Please check your inbox and follow the instructions to reset your password.
+        <br><br>
+        The link will expire in 1 hour for security reasons.
+    </div>
+    <a href="/auth" class="btn btn-primary">
+        <i class="fas fa-arrow-left"></i> Return to Login
+    </a>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{url_for('auth.static', filename='auth/js/forgot_pass.js')}}"></script>
+{% endblock %}

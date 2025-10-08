@@ -1,0 +1,130 @@
+{% extends "main/base.html" %}
+
+{% block title %}Report Missing Person - FindMe{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('main.static', filename='main/css/forms.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="form-header">
+        <h1 class="form-title">Report a Missing Person</h1>
+        <p class="form-subtitle">Please provide as much information as possible to help in the search</p>
+    </div>
+
+    <form id="reportForm" class="report-form">
+        <div class="form-section">
+            <h2 class="section-title"><i class="fas fa-user"></i> Personal Information</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="fullName" class="form-label">Full Name <span class="required">*</span></label>
+                    <input type="text" id="fullName" name="full_name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="age" class="form-label">Age</label>
+                    <input type="number" id="age" name="age" class="form-control" min="0" max="150">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="gender" class="form-label">Gender</label>
+                    <select id="gender" name="gender" class="form-control">
+                        <option value="">Select...</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="dateOfBirth" class="form-label">Date of Birth</label>
+                    <input type="date" id="dateOfBirth" name="date_of_birth" class="form-control">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2 class="section-title"><i class="fas fa-ruler"></i> Physical Description</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="height" class="form-label">Height</label>
+                    <input type="text" id="height" name="height" class="form-control" placeholder="e.g., 5'8&quot;">
+                </div>
+                <div class="form-group">
+                    <label for="weight" class="form-label">Weight</label>
+                    <input type="text" id="weight" name="weight" class="form-control" placeholder="e.g., 150 lbs">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="hairColor" class="form-label">Hair Color</label>
+                    <input type="text" id="hairColor" name="hair_color" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="eyeColor" class="form-label">Eye Color</label>
+                    <input type="text" id="eyeColor" name="eye_color" class="form-control">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="distinguishingFeatures" class="form-label">Distinguishing Features</label>
+                <textarea id="distinguishingFeatures" name="distinguishing_features" class="form-control" rows="3" placeholder="Scars, tattoos, birthmarks, etc."></textarea>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2 class="section-title"><i class="fas fa-map-marker-alt"></i> Last Seen Information</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="lastSeenLocation" class="form-label">Location <span class="required">*</span></label>
+                    <input type="text" id="lastSeenLocation" name="last_seen_location" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="lastSeenDate" class="form-label">Date & Time <span class="required">*</span></label>
+                    <input type="datetime-local" id="lastSeenDate" name="last_seen_date" class="form-control" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="lastSeenWearing" class="form-label">Last Seen Wearing</label>
+                <textarea id="lastSeenWearing" name="last_seen_wearing" class="form-control" rows="3" placeholder="Description of clothing"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="circumstances" class="form-label">Circumstances</label>
+                <textarea id="circumstances" name="circumstances" class="form-control" rows="4" placeholder="Describe the circumstances of the disappearance"></textarea>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2 class="section-title"><i class="fas fa-phone"></i> Contact Information</h2>
+            <div class="form-group">
+                <label for="contactName" class="form-label">Contact Name</label>
+                <input type="text" id="contactName" name="contact_name" class="form-control">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="contactPhone" class="form-label">Contact Phone</label>
+                    <input type="tel" id="contactPhone" name="contact_phone" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="contactEmail" class="form-label">Contact Email</label>
+                    <input type="email" id="contactEmail" name="contact_email" class="form-control">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="button" class="btn btn-secondary" onclick="history.back()">Cancel</button>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-paper-plane"></i> Submit Report
+            </button>
+        </div>
+    </form>
+</div>
+
+<script src="{{ url_for('main.static', filename='main/js/report_missing.js') }}"></script>
+{% endblock %}

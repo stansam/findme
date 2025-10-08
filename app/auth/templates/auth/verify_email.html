@@ -1,0 +1,51 @@
+{% extends "auth/base.html" %}
+
+{% block title %}FindMe - Verify Email{% endblock %}
+
+{% block subtitle %}Email verification{% endblock %}
+
+{% block extra_css %}
+<link href="{{url_for('auth.static', filename='auth/css/verify_email.css')}}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="verification-container">
+    <!-- Loading State -->
+    <div id="loading-state" class="loading-state">
+        <i class="fas fa-spinner fa-spin loading-icon"></i>
+        <div class="loading-title">Verifying Your Email</div>
+        <div class="loading-text">Please wait while we verify your email address...</div>
+    </div>
+
+    <!-- Success State -->
+    <div id="success-state" class="result-state">
+        <i class="fas fa-check-circle result-icon success"></i>
+        <div class="result-title">Email Verified Successfully!</div>
+        <div class="result-text">
+            Your email has been verified. You can now enjoy all the features of FindMe.
+        </div>
+        <a href="/auth" class="btn btn-primary">
+            <i class="fas fa-sign-in-alt"></i> Go to Login
+        </a>
+    </div>
+
+    <!-- Error State -->
+    <div id="error-state" class="result-state">
+        <i class="fas fa-exclamation-circle result-icon error"></i>
+        <div class="result-title">Verification Failed</div>
+        <div class="result-text" id="error-message">
+            The verification link is invalid or has expired. Please request a new verification email.
+        </div>
+        <a href="/auth/resend-verification" class="btn btn-primary">
+            <i class="fas fa-paper-plane"></i> Resend Verification
+        </a>
+        <a href="/auth" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Login
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{url_for('auth.static', filename='auth/js/verify_email.js')}}"></script>
+{% endblock %}

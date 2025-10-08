@@ -1,0 +1,30 @@
+{% extends "main/base.html" %}
+{% block title %}About - FindMe{% endblock %}
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto;">
+    <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">About FindMe</h1>
+    <div style="background-color: var(--bg-secondary); padding: 2rem; border-radius: 12px; border: 1px solid var(--border-color);">
+        <h2 style="color: var(--accent-primary); margin-bottom: 1rem;"><i class="fas fa-heart"></i> Our Mission</h2>
+        <p style="color: var(--text-secondary); line-height: 1.8; margin-bottom: 2rem;">FindMe is dedicated to helping reunite missing persons with their loved ones. We provide a comprehensive platform for reporting and searching for missing individuals, leveraging technology and community support to make a difference.</p>
+
+        <h2 style="color: var(--accent-primary); margin-bottom: 1rem;"><i class="fas fa-users"></i> How It Works</h2>
+        <div style="display: grid; gap: 1.5rem; margin-bottom: 2rem;">
+            <div style="background-color: var(--bg-tertiary); padding: 1.5rem; border-radius: 8px;">
+                <h3 style="color: var(--text-primary); margin-bottom: 0.5rem;">1. Report</h3>
+                <p style="color: var(--text-secondary);">Family members or authorities can submit detailed reports about missing persons.</p>
+            </div>
+            <div style="background-color: var(--bg-tertiary); padding: 1.5rem; border-radius: 8px;">
+                <h3 style="color: var(--text-primary); margin-bottom: 0.5rem;">2. Search</h3>
+                <p style="color: var(--text-secondary);">Browse our database and use advanced filters to find information about missing individuals.</p>
+            </div>
+            <div style="background-color: var(--bg-tertiary); padding: 1.5rem; border-radius: 8px;">
+                <h3 style="color: var(--text-primary); margin-bottom: 0.5rem;">3. Report Sightings</h3>
+                <p style="color: var(--text-secondary);">Community members can report sightings to help locate missing persons.</p>
+            </div>
+        </div>
+
+        <h2 style="color: var(--accent-primary); margin-bottom: 1rem;"><i class="fas fa-phone"></i> Contact Us</h2>
+        <p style="color: var(--text-secondary); line-height: 1.8;">For emergencies, always call 911. For general inquiries, visit our <a href="{{ url_for('main.contact') }}" style="color: var(--accent-primary);">contact page</a>.</p>
+    </div>
+</div>
+{% endblock %}

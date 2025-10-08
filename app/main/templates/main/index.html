@@ -1,0 +1,553 @@
+{% extends "main/base.html" %}
+
+{% block extra_css %}
+<style>
+.hero-section {
+    position: relative;
+    height: 600px;
+    overflow: hidden;
+    border-radius: 12px;
+    margin-bottom: 3rem;
+}
+
+.hero-slider {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.hero-slide {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+    background-size: cover;
+    background-position: center;
+}
+
+.hero-slide.active {
+    opacity: 1;
+}
+
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(15, 15, 15, 0.9) 0%, rgba(26, 26, 26, 0.7) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+.hero-content {
+    text-align: center;
+    max-width: 800px;
+    padding: 2rem;
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-hover));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero-subtitle {
+    font-size: 1.5rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.hero-btn {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: var(--transition);
+    font-weight: 600;
+}
+
+.hero-btn-primary {
+    background-color: var(--accent-primary);
+    color: var(--text-primary);
+}
+
+.hero-btn-primary:hover {
+    background-color: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px var(--shadow);
+}
+
+.hero-btn-secondary {
+    background-color: transparent;
+    color: var(--text-primary);
+    border: 2px solid var(--accent-primary);
+}
+
+.hero-btn-secondary:hover {
+    background-color: var(--accent-primary);
+    transform: translateY(-2px);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.stat-card {
+    background-color: var(--bg-secondary);
+    padding: 2rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    text-align: center;
+    transition: var(--transition);
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px var(--shadow);
+    border-color: var(--accent-primary);
+}
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+}
+
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--accent-primary);
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--text-primary);
+}
+
+.section-subtitle {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+}
+
+.cases-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.case-card {
+    background-color: var(--bg-secondary);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.case-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px var(--shadow);
+    border-color: var(--accent-primary);
+}
+
+.case-image {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    background-color: var(--bg-tertiary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-size: 3rem;
+}
+
+.case-content {
+    padding: 1.5rem;
+}
+
+.case-name {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+.case-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.case-info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.case-info-item i {
+    color: var(--accent-primary);
+    width: 20px;
+}
+
+.case-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.case-status {
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    background-color: var(--warning);
+    color: var(--text-primary);
+}
+
+.case-link {
+    color: var(--accent-primary);
+    text-decoration: none;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--transition);
+}
+
+.case-link:hover {
+    color: var(--accent-hover);
+}
+
+.view-all-btn {
+    display: block;
+    width: fit-content;
+    margin: 2rem auto;
+    padding: 1rem 3rem;
+    background-color: var(--accent-primary);
+    color: var(--text-primary);
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: var(--transition);
+}
+
+.view-all-btn:hover {
+    background-color: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px var(--shadow);
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.feature-card {
+    background-color: var(--bg-secondary);
+    padding: 2rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    text-align: center;
+    transition: var(--transition);
+}
+
+.feature-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent-primary);
+}
+
+.feature-icon {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 1.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+}
+
+.feature-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--text-primary);
+}
+
+.feature-description {
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.cta-section {
+    background: linear-gradient(135deg, var(--accent-secondary), var(--accent-primary));
+    padding: 4rem 2rem;
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.cta-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.cta-text {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    color: #e0e0e0;
+}
+
+.cta-button {
+    padding: 1.25rem 3rem;
+    background-color: var(--text-primary);
+    color: var(--bg-primary);
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1.2rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: var(--transition);
+}
+
+.cta-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1.2rem;
+    }
+
+    .section-title {
+        font-size: 2rem;
+    }
+
+    .cases-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="hero-slider">
+        <div class="hero-slide active" style="background-image: url('https://images.pexels.com/photos/1098515/pexels-photo-1098515.jpeg?auto=compress&cs=tinysrgb&w=1920')"></div>
+        <div class="hero-slide" style="background-image: url('https://images.pexels.com/photos/2112638/pexels-photo-2112638.jpeg?auto=compress&cs=tinysrgb&w=1920')"></div>
+        <div class="hero-slide" style="background-image: url('https://images.pexels.com/photos/1190299/pexels-photo-1190299.jpeg?auto=compress&cs=tinysrgb&w=1920')"></div>
+    </div>
+    <div class="hero-overlay">
+        <div class="hero-content">
+            <h1 class="hero-title">Help Bring Them Home</h1>
+            <p class="hero-subtitle">A comprehensive platform to report and search for missing persons. Together, we can make a difference.</p>
+            <div class="hero-actions">
+                <a href="{{ url_for('main.browse') }}" class="hero-btn hero-btn-primary">
+                    <i class="fas fa-search"></i>
+                    Browse Cases
+                </a>
+                <a href="{{ url_for('main.report_missing') }}" class="hero-btn hero-btn-secondary">
+                    <i class="fas fa-plus-circle"></i>
+                    Report Missing Person
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fas fa-users"></i>
+        </div>
+        <div class="stat-value">{{ stats.total_missing }}</div>
+        <div class="stat-label">Active Cases</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="stat-value">{{ stats.total_found }}</div>
+        <div class="stat-label">Found</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fas fa-eye"></i>
+        </div>
+        <div class="stat-value">{{ stats.active_reports }}</div>
+        <div class="stat-label">Pending Reports</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fas fa-user-friends"></i>
+        </div>
+        <div class="stat-value">{{ stats.total_users }}</div>
+        <div class="stat-label">Community Members</div>
+    </div>
+</section>
+
+<section>
+    <div class="section-header">
+        <h2 class="section-title">Recent Missing Persons</h2>
+        <p class="section-subtitle">Help us find these individuals</p>
+    </div>
+
+    <div class="cases-grid">
+        {% for case in recent_cases %}
+        <div class="case-card" onclick="window.location.href='{{ url_for('main.person_detail', person_id=case.id) }}'">
+            {% if case.photos.first() %}
+            <img src="{{ url_for('static', filename='uploads/' + case.photos.first().filename) }}" alt="{{ case.full_name }}" class="case-image">
+            {% else %}
+            <div class="case-image">
+                <i class="fas fa-user"></i>
+            </div>
+            {% endif %}
+            <div class="case-content">
+                <h3 class="case-name">{{ case.full_name }}</h3>
+                <div class="case-info">
+                    {% if case.age %}
+                    <div class="case-info-item">
+                        <i class="fas fa-birthday-cake"></i>
+                        <span>{{ case.age }} years old</span>
+                    </div>
+                    {% endif %}
+                    <div class="case-info-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>{{ case.last_seen_location }}</span>
+                    </div>
+                    <div class="case-info-item">
+                        <i class="fas fa-calendar"></i>
+                        <span>Last seen: {{ case.last_seen_date.strftime('%b %d, %Y') }}</span>
+                    </div>
+                </div>
+                <div class="case-footer">
+                    <span class="case-status">{{ case.status.value|upper }}</span>
+                    <a href="{{ url_for('main.person_detail', person_id=case.id) }}" class="case-link">
+                        View Details <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <a href="{{ url_for('main.browse') }}" class="view-all-btn">
+        View All Cases <i class="fas fa-arrow-right"></i>
+    </a>
+</section>
+
+<section class="features-grid">
+    <div class="feature-card">
+        <div class="feature-icon">
+            <i class="fas fa-search"></i>
+        </div>
+        <h3 class="feature-title">Advanced Search</h3>
+        <p class="feature-description">Search through our comprehensive database using multiple filters including location, date, and physical characteristics.</p>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon">
+            <i class="fas fa-map-marked-alt"></i>
+        </div>
+        <h3 class="feature-title">Interactive Map</h3>
+        <p class="feature-description">Visualize missing person locations on an interactive map to identify patterns and areas of concern.</p>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon">
+            <i class="fas fa-bell"></i>
+        </div>
+        <h3 class="feature-title">Real-time Alerts</h3>
+        <p class="feature-description">Receive instant notifications about new sightings and updates on cases you're following.</p>
+    </div>
+</section>
+
+<section class="cta-section">
+    <h2 class="cta-title">See Someone? Say Something</h2>
+    <p class="cta-text">Your information could be the key to reuniting families. Report a sighting today.</p>
+    <a href="{{ url_for('main.browse') }}" class="cta-button">
+        <i class="fas fa-eye"></i>
+        Report a Sighting
+    </a>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    initHeroSlider();
+});
+
+function initHeroSlider() {
+    const slides = document.querySelectorAll('.hero-slide');
+    let currentSlide = 0;
+
+    if (slides.length <= 1) return;
+
+    setInterval(() => {
+        slides[currentSlide].classList.remove('active');
+        currentSlide = (currentSlide + 1) % slides.length;
+        slides[currentSlide].classList.add('active');
+    }, 5000);
+}
+</script>
+{% endblock %}

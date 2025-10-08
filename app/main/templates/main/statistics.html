@@ -1,0 +1,45 @@
+{% extends "main/base.html" %}
+{% block title %}Statistics - FindMe{% endblock %}
+{% block content %}
+<div style="max-width: 1200px; margin: 0 auto;">
+    <h1 style="font-size: 2.5rem; margin-bottom: 2rem;">Statistics</h1>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+        <div style="background-color: var(--bg-secondary); padding: 2rem; border-radius: 12px; text-align: center; border: 1px solid var(--border-color);">
+            <i class="fas fa-users" style="font-size: 2.5rem; color: var(--accent-primary); margin-bottom: 1rem;"></i>
+            <div style="font-size: 2.5rem; font-weight: 700; color: var(--accent-primary);">{{ stats.total_cases }}</div>
+            <div style="color: var(--text-secondary);">Total Cases</div>
+        </div>
+        <div style="background-color: var(--bg-secondary); padding: 2rem; border-radius: 12px; text-align: center; border: 1px solid var(--border-color);">
+            <i class="fas fa-exclamation-circle" style="font-size: 2.5rem; color: var(--warning); margin-bottom: 1rem;"></i>
+            <div style="font-size: 2.5rem; font-weight: 700; color: var(--warning);">{{ stats.missing_count }}</div>
+            <div style="color: var(--text-secondary);">Currently Missing</div>
+        </div>
+        <div style="background-color: var(--bg-secondary); padding: 2rem; border-radius: 12px; text-align: center; border: 1px solid var(--border-color);">
+            <i class="fas fa-check-circle" style="font-size: 2.5rem; color: var(--success); margin-bottom: 1rem;"></i>
+            <div style="font-size: 2.5rem; font-weight: 700; color: var(--success);">{{ stats.found_count }}</div>
+            <div style="color: var(--text-secondary);">Found</div>
+        </div>
+        <div style="background-color: var(--bg-secondary); padding: 2rem; border-radius: 12px; text-align: center; border: 1px solid var(--border-color);">
+            <i class="fas fa-percentage" style="font-size: 2.5rem; color: var(--info); margin-bottom: 1rem;"></i>
+            <div style="font-size: 2.5rem; font-weight: 700; color: var(--info);">{{ stats.success_rate }}%</div>
+            <div style="color: var(--text-secondary);">Success Rate</div>
+        </div>
+    </div>
+    {% if stats.recent_found %}
+    <div style="background-color: var(--bg-secondary); padding: 2rem; border-radius: 12px; border: 1px solid var(--border-color);">
+        <h2 style="margin-bottom: 1.5rem;"><i class="fas fa-heart"></i> Recently Found</h2>
+        <div style="display: grid; gap: 1rem;">
+            {% for person in stats.recent_found %}
+            <div style="background-color: var(--bg-tertiary); padding: 1.5rem; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h3 style="color: var(--text-primary);">{{ person.full_name }}</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem;"><i class="fas fa-calendar"></i> Found: {{ person.found_date.strftime('%b %d, %Y') if person.found_date else 'N/A' }}</p>
+                </div>
+                <span style="padding: 0.4rem 0.8rem; background-color: var(--success); border-radius: 6px; font-weight: 600;">FOUND</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

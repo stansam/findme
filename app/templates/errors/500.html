@@ -1,0 +1,12 @@
+{% extends "main/base.html" %}
+{% block title %}Server Error - FindMe{% endblock %}
+{% block content %}
+<div style="text-align: center; padding: 4rem 2rem;">
+    <i class="fas fa-server" style="font-size: 5rem; color: var(--error); margin-bottom: 2rem;"></i>
+    <h1 style="font-size: 3rem; margin-bottom: 1rem;">500 - Server Error</h1>
+    <p style="color: var(--text-secondary); font-size: 1.2rem; margin-bottom: 2rem;">Something went wrong on our end. Please try again later.</p>
+    <a href="{{ url_for('main.index') }}" style="padding: 1rem 2rem; background-color: var(--accent-primary); color: var(--text-primary); text-decoration: none; border-radius: 6px; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600;">
+        <i class="fas fa-home"></i> Go Home
+    </a>
+</div>
+{% endblock %}

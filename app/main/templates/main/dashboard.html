@@ -1,0 +1,77 @@
+{% extends "main/base.html" %}
+
+{% block title %}Dashboard - FindMe{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('main.static', filename='main/css/dashboard.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1>Welcome, {{ current_user.username }}</h1>
+        <p>Manage your reports and track updates</p>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2><i class="fas fa-user-friends"></i> My Missing Person Reports</h2>
+                <a href="{{ url_for('main.report_missing') }}" class="btn-add">
+                    <i class="fas fa-plus"></i> New Report
+                </a>
+            </div>
+
+            {% if user_reports %}
+            <div class="reports-list">
+                {% for report in user_reports %}
+                <div class="report-card" onclick="window.location.href='{{ url_for('main.person_detail', person_id=report.id) }}'">
+                    <div class="report-info">
+                        <h3>{{ report.full_name }}</h3>
+                        <p><i class="fas fa-map-marker-alt"></i> {{ report.last_seen_location }}</p>
+                        <p><i class="fas fa-calendar"></i> {{ report.last_seen_date.strftime('%b %d, %Y') }}</p>
+                    </div>
+                    <div class="report-status">
+                        <span class="badge badge-{{ report.status.value }}">{{ report.status.value }}</span>
+                        <span class="views"><i class="fas fa-eye"></i> {{ report.view_count }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-folder-open"></i>
+                <p>You haven't submitted any missing person reports yet</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2><i class="fas fa-eye"></i> My Sighting Reports</h2>
+            </div>
+
+            {% if user_sightings %}
+            <div class="sightings-list">
+                {% for sighting in user_sightings %}
+                <div class="sighting-card">
+                    <div class="sighting-info">
+                        <h4>Sighting Report</h4>
+                        <p><i class="fas fa-map-pin"></i> {{ sighting.sighting_location }}</p>
+                        <p><i class="fas fa-calendar"></i> {{ sighting.sighting_date.strftime('%b %d, %Y') }}</p>
+                    </div>
+                    <span class="badge badge-{{ sighting.status.value }}">{{ sighting.status.value }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-eye-slash"></i>
+                <p>You haven't submitted any sighting reports yet</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

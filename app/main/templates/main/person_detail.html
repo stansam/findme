@@ -1,0 +1,274 @@
+{% extends "main/base.html" %}
+
+{% block title %}{{ person.full_name }} - Missing Person Details{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('main.static', filename='css/person_detail.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="detail-container">
+    <div class="detail-header">
+        <button onclick="history.back()" class="btn-back">
+            <i class="fas fa-arrow-left"></i> Back
+        </button>
+        <div class="detail-actions">
+            <button class="btn-action" onclick="window.print()">
+                <i class="fas fa-print"></i> Print
+            </button>
+            <button class="btn-action" onclick="shareCase()">
+                <i class="fas fa-share-alt"></i> Share
+            </button>
+        </div>
+    </div>
+
+    <div class="detail-grid">
+        <div class="detail-main">
+            <div class="photo-section">
+                {% if photos %}
+                <div class="photo-gallery">
+                    <div class="photo-main">
+                        <img src="{{ url_for('static', filename='uploads/' + photos[0].filename) }}" alt="{{ person.full_name }}" id="mainPhoto">
+                    </div>
+                    {% if photos|length > 1 %}
+                    <div class="photo-thumbnails">
+                        {% for photo in photos %}
+                        <img src="{{ url_for('static', filename='uploads/' + photo.filename) }}"
+                             alt="{{ person.full_name }}"
+                             class="photo-thumbnail {% if loop.first %}active{% endif %}"
+                             onclick="changeMainPhoto(this.src)">
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% else %}
+                <div class="photo-placeholder">
+                    <i class="fas fa-user"></i>
+                    <p>No photo available</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="info-card">
+                <div class="status-badge status-{{ person.status.value }}">
+                    {{ person.status.value|upper }}
+                </div>
+                <h1 class="person-name">{{ person.full_name }}</h1>
+
+                <div class="info-grid">
+                    {% if person.age %}
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-birthday-cake"></i> Age
+                        </div>
+                        <div class="info-value">{{ person.age }} years old</div>
+                    </div>
+                    {% endif %}
+
+                    {% if person.gender %}
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-venus-mars"></i> Gender
+                        </div>
+                        <div class="info-value">{{ person.gender }}</div>
+                    </div>
+                    {% endif %}
+
+                    {% if person.height %}
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-ruler-vertical"></i> Height
+                        </div>
+                        <div class="info-value">{{ person.height }}</div>
+                    </div>
+                    {% endif %}
+
+                    {% if person.weight %}
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-weight"></i> Weight
+                        </div>
+                        <div class="info-value">{{ person.weight }}</div>
+                    </div>
+                    {% endif %}
+
+                    {% if person.hair_color %}
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-palette"></i> Hair Color
+                        </div>
+                        <div class="info-value">{{ person.hair_color }}</div>
+                    </div>
+                    {% endif %}
+
+                    {% if person.eye_color %}
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class="fas fa-eye"></i> Eye Color
+                        </div>
+                        <div class="info-value">{{ person.eye_color }}</div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                {% if person.distinguishing_features %}
+                <div class="info-section">
+                    <h3><i class="fas fa-fingerprint"></i> Distinguishing Features</h3>
+                    <p>{{ person.distinguishing_features }}</p>
+                </div>
+                {% endif %}
+
+                {% if person.last_seen_wearing %}
+                <div class="info-section">
+                    <h3><i class="fas fa-tshirt"></i> Last Seen Wearing</h3>
+                    <p>{{ person.last_seen_wearing }}</p>
+                </div>
+                {% endif %}
+
+                {% if person.circumstances %}
+                <div class="info-section">
+                    <h3><i class="fas fa-info-circle"></i> Circumstances</h3>
+                    <p>{{ person.circumstances }}</p>
+                </div>
+                {% endif %}
+            </div>
+
+            {% if sightings %}
+            <div class="sightings-section">
+                <h2><i class="fas fa-map-marker-alt"></i> Verified Sightings</h2>
+                <div class="sightings-list">
+                    {% for sighting in sightings %}
+                    <div class="sighting-card">
+                        <div class="sighting-header">
+                            <div class="sighting-date">
+                                <i class="fas fa-calendar"></i>
+                                {{ sighting.sighting_date.strftime('%B %d, %Y at %I:%M %p') }}
+                            </div>
+                        </div>
+                        <div class="sighting-location">
+                            <i class="fas fa-map-pin"></i>
+                            {{ sighting.sighting_location }}
+                        </div>
+                        <p class="sighting-description">{{ sighting.description }}</p>
+                        {% if sighting.person_condition %}
+                        <div class="sighting-condition">
+                            <strong>Condition:</strong> {{ sighting.person_condition }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="detail-sidebar">
+            <div class="sidebar-card">
+                <h3><i class="fas fa-clock"></i> Last Seen</h3>
+                <div class="last-seen-info">
+                    <div class="last-seen-date">
+                        {{ person.last_seen_date.strftime('%B %d, %Y') }}
+                    </div>
+                    <div class="last-seen-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        {{ person.last_seen_location }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-card">
+                <h3><i class="fas fa-phone"></i> Contact Information</h3>
+                {% if person.contact_name %}
+                <div class="contact-item">
+                    <div class="contact-label">Contact Person</div>
+                    <div class="contact-value">{{ person.contact_name }}</div>
+                </div>
+                {% endif %}
+                {% if person.contact_phone %}
+                <div class="contact-item">
+                    <div class="contact-label">Phone</div>
+                    <div class="contact-value">
+                        <a href="tel:{{ person.contact_phone }}">{{ person.contact_phone }}</a>
+                    </div>
+                </div>
+                {% endif %}
+                {% if person.contact_email %}
+                <div class="contact-item">
+                    <div class="contact-label">Email</div>
+                    <div class="contact-value">
+                        <a href="mailto:{{ person.contact_email }}">{{ person.contact_email }}</a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            {% if person.case_number %}
+            <div class="sidebar-card">
+                <h3><i class="fas fa-file-alt"></i> Case Information</h3>
+                <div class="contact-item">
+                    <div class="contact-label">Case Number</div>
+                    <div class="contact-value">{{ person.case_number }}</div>
+                </div>
+                {% if person.police_report_number %}
+                <div class="contact-item">
+                    <div class="contact-label">Police Report</div>
+                    <div class="contact-value">{{ person.police_report_number }}</div>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <div class="cta-card">
+                <h3>Have you seen {{ person.full_name.split()[0] }}?</h3>
+                <p>If you have any information, please report it immediately.</p>
+                <a href="{{ url_for('main.report_sighting', person_id=person.id) }}" class="btn-report-sighting">
+                    <i class="fas fa-eye"></i> Report Sighting
+                </a>
+                <a href="tel:911" class="btn-emergency">
+                    <i class="fas fa-phone"></i> Call 911
+                </a>
+            </div>
+
+            <div class="stats-card">
+                <div class="stat-item">
+                    <i class="fas fa-eye"></i>
+                    <div>
+                        <div class="stat-value">{{ person.view_count }}</div>
+                        <div class="stat-label">Views</div>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-calendar-plus"></i>
+                    <div>
+                        <div class="stat-value">{{ (now() - person.created_at).days }}</div>
+                        <div class="stat-label">Days since report</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function changeMainPhoto(src) {
+    document.getElementById('mainPhoto').src = src;
+    document.querySelectorAll('.photo-thumbnail').forEach(thumb => {
+        thumb.classList.remove('active');
+    });
+    event.target.classList.add('active');
+}
+
+function shareCase() {
+    if (navigator.share) {
+        navigator.share({
+            title: 'Help find {{ person.full_name }}',
+            text: 'Missing person: {{ person.full_name }}. Last seen in {{ person.last_seen_location }}',
+            url: window.location.href
+        }).catch(err => console.log('Error sharing:', err));
+    } else {
+        navigator.clipboard.writeText(window.location.href);
+        showAlert('Link copied to clipboard!', 'success');
+    }
+}
+</script>
+{% endblock %}

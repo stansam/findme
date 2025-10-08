@@ -1,0 +1,196 @@
+{% extends "main/base.html" %}
+
+{% block title %}Report Sighting - FindMe{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('main.static', filename='css/forms.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="form-header">
+        <h1 class="form-title">Report a Sighting</h1>
+        <p class="form-subtitle">Help us locate {{ person.full_name }}</p>
+    </div>
+
+    <div class="person-preview">
+        <div class="preview-content">
+            {% if person.photos.first() %}
+            <img src="{{ url_for('static', filename='uploads/' + person.photos.first().filename) }}" alt="{{ person.full_name }}">
+            {% else %}
+            <div class="preview-placeholder"><i class="fas fa-user"></i></div>
+            {% endif %}
+            <div>
+                <h3>{{ person.full_name }}</h3>
+                <p>Last seen: {{ person.last_seen_location }}</p>
+            </div>
+        </div>
+    </div>
+
+    <form id="sightingForm" class="report-form">
+        <input type="hidden" id="missingPersonId" value="{{ person.id }}">
+
+        <div class="form-section">
+            <h2 class="section-title"><i class="fas fa-map-marker-alt"></i> Sighting Details</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="sightingDate" class="form-label">Date & Time <span class="required">*</span></label>
+                    <input type="datetime-local" id="sightingDate" name="sighting_date" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="sightingLocation" class="form-label">Location <span class="required">*</span></label>
+                    <input type="text" id="sightingLocation" name="sighting_location" class="form-control" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="description" class="form-label">Description <span class="required">*</span></label>
+                <textarea id="description" name="description" class="form-control" rows="5" required placeholder="Describe what you saw in detail"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="personCondition" class="form-label">Person's Condition</label>
+                <textarea id="personCondition" name="person_condition" class="form-control" rows="2" placeholder="Physical and mental condition observed"></textarea>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2 class="section-title"><i class="fas fa-phone"></i> Your Contact (Optional)</h2>
+            <div class="form-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="isAnonymous" name="is_anonymous">
+                    <span>Submit anonymously</span>
+                </label>
+            </div>
+            <div id="contactFields">
+                <div class="form-group">
+                    <label for="reporterContact" class="form-label">Contact Information</label>
+                    <input type="text" id="reporterContact" name="reporter_contact" class="form-control" placeholder="Phone or email">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="button" class="btn btn-secondary" onclick="history.back()">Cancel</button>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-paper-plane"></i> Submit Sighting
+            </button>
+        </div>
+    </form>
+</div>
+
+<style>
+.person-preview {
+    background-color: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--border-color);
+}
+
+.preview-content {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.preview-content img,
+.preview-placeholder {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.preview-placeholder {
+    background-color: var(--bg-tertiary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: var(--text-muted);
+}
+
+.preview-content h3 {
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.preview-content p {
+    color: var(--text-secondary);
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    color: var(--text-primary);
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('sightingForm');
+    const isAnonymous = document.getElementById('isAnonymous');
+    const contactFields = document.getElementById('contactFields');
+
+    isAnonymous.addEventListener('change', function() {
+        contactFields.style.display = this.checked ? 'none' : 'block';
+    });
+
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const formData = {
+            missing_person_id: document.getElementById('missingPersonId').value,
+            sighting_date: document.getElementById('sightingDate').value,
+            sighting_location: document.getElementById('sightingLocation').value,
+            description: document.getElementById('description').value,
+            person_condition: document.getElementById('personCondition').value || null,
+            is_anonymous: document.getElementById('isAnonymous').checked,
+            reporter_contact: document.getElementById('isAnonymous').checked ? null : document.getElementById('reporterContact').value
+        };
+
+        showLoadingOverlay();
+
+        try {
+            const response = await apiRequest('/api/sightings', 'POST', formData);
+
+            hideLoadingOverlay();
+
+            if (response.success) {
+                showAlert('Sighting report submitted successfully!', 'success');
+                setTimeout(() => {
+                    window.location.href = `/person/${formData.missing_person_id}`;
+                }, 1500);
+            }
+        } catch (error) {
+            hideLoadingOverlay();
+            showAlert(error.message || 'Failed to submit sighting', 'error');
+        }
+    });
+});
+
+function showLoadingOverlay() {
+    const overlay = document.createElement('div');
+    overlay.className = 'loading-overlay';
+    overlay.id = 'loadingOverlay';
+    overlay.innerHTML = '<div class="loading-spinner"></div>';
+    document.body.appendChild(overlay);
+}
+
+function hideLoadingOverlay() {
+    const overlay = document.getElementById('loadingOverlay');
+    if (overlay) {
+        overlay.remove();
+    }
+}
+</script>
+{% endblock %}

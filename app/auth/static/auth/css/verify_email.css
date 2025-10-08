@@ -1,0 +1,123 @@
+.verification-container {
+    text-align: center;
+    padding: 20px;
+}
+
+.loading-state {
+    display: block;
+}
+
+.loading-state.hide {
+    display: none;
+}
+
+.loading-icon {
+    font-size: 4rem;
+    color: #60a5fa;
+    margin-bottom: 20px;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(0.95); }
+}
+
+.loading-title {
+    color: #e0e0e0;
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.loading-text {
+    color: #94a3b8;
+    font-size: 0.95rem;
+}
+
+.result-state {
+    display: none;
+    animation: fadeIn 0.4s ease-out;
+}
+
+.result-state.show {
+    display: block;
+}
+
+.result-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    display: block;
+}
+
+.result-icon.success {
+    color: #22c55e;
+}
+
+.result-icon.error {
+    color: #ef4444;
+}
+
+.result-title {
+    color: #e0e0e0;
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.result-text {
+    color: #94a3b8;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+.btn {
+    padding: 13px 30px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: rgba(100, 116, 139, 0.3);
+    color: #cbd5e1;
+    border: 1px solid rgba(100, 116, 139, 0.5);
+    margin-left: 10px;
+}
+
+.btn-secondary:hover {
+    background: rgba(100, 116, 139, 0.4);
+    border-color: rgba(100, 116, 139, 0.7);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}

@@ -1,0 +1,375 @@
+{% extends "main/base.html" %}
+
+{% block title %}Browse Missing Persons - FindMe{% endblock %}
+
+{% block extra_css %}
+<style>
+.browse-header {
+    margin-bottom: 2rem;
+}
+
+.browse-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+.browse-subtitle {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+.filters-section {
+    background-color: var(--bg-secondary);
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    border: 1px solid var(--border-color);
+}
+
+.filters-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    align-items: end;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-label {
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.form-control {
+    padding: 0.75rem;
+    background-color: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px rgba(58, 124, 165, 0.1);
+}
+
+.btn-filter {
+    padding: 0.75rem 1.5rem;
+    background-color: var(--accent-primary);
+    color: var(--text-primary);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.btn-filter:hover {
+    background-color: var(--accent-hover);
+}
+
+.results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.results-count {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+.sort-dropdown {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.cases-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.case-card {
+    background-color: var(--bg-secondary);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.case-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px var(--shadow);
+    border-color: var(--accent-primary);
+}
+
+.case-image {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    background-color: var(--bg-tertiary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-size: 3rem;
+}
+
+.case-content {
+    padding: 1.5rem;
+}
+
+.case-name {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+.case-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.case-info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.case-info-item i {
+    color: var(--accent-primary);
+    width: 20px;
+}
+
+.case-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.case-status {
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    background-color: var(--warning);
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+}
+
+.pagination-btn {
+    padding: 0.75rem 1rem;
+    background-color: var(--bg-secondary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.pagination-btn:hover:not(.disabled) {
+    background-color: var(--accent-primary);
+    color: var(--text-primary);
+    border-color: var(--accent-primary);
+}
+
+.pagination-btn.active {
+    background-color: var(--accent-primary);
+    color: var(--text-primary);
+    border-color: var(--accent-primary);
+}
+
+.pagination-btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.no-results {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--text-secondary);
+}
+
+.no-results i {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    color: var(--text-muted);
+}
+
+.no-results h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="browse-header">
+    <h1 class="browse-title">Browse Missing Persons</h1>
+    <p class="browse-subtitle">Search our database to help find missing individuals</p>
+</div>
+
+<div class="filters-section">
+    <form method="GET" action="{{ url_for('main.browse') }}" class="filters-form">
+        <div class="form-group">
+            <label for="search" class="form-label">Search</label>
+            <input type="text" id="search" name="q" class="form-control" placeholder="Name or location..." value="{{ search_query }}">
+        </div>
+        <div class="form-group">
+            <label for="status" class="form-label">Status</label>
+            <select id="status" name="status" class="form-control">
+                <option value="">All Statuses</option>
+                <option value="missing" {% if status_filter == 'missing' %}selected{% endif %}>Missing</option>
+                <option value="found" {% if status_filter == 'found' %}selected{% endif %}>Found</option>
+                <option value="investigating" {% if status_filter == 'investigating' %}selected{% endif %}>Investigating</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="gender" class="form-label">Gender</label>
+            <select id="gender" name="gender" class="form-control">
+                <option value="">All</option>
+                <option value="Male" {% if gender_filter == 'Male' %}selected{% endif %}>Male</option>
+                <option value="Female" {% if gender_filter == 'Female' %}selected{% endif %}>Female</option>
+                <option value="Other" {% if gender_filter == 'Other' %}selected{% endif %}>Other</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="sort" class="form-label">Sort By</label>
+            <select id="sort" name="sort" class="form-control">
+                <option value="recent" {% if sort_by == 'recent' %}selected{% endif %}>Most Recent</option>
+                <option value="oldest" {% if sort_by == 'oldest' %}selected{% endif %}>Oldest First</option>
+                <option value="last_seen" {% if sort_by == 'last_seen' %}selected{% endif %}>Last Seen Date</option>
+            </select>
+        </div>
+        <button type="submit" class="btn-filter">
+            <i class="fas fa-filter"></i> Apply Filters
+        </button>
+    </form>
+</div>
+
+<div class="results-header">
+    <div class="results-count">
+        <strong>{{ pagination.total }}</strong> cases found
+    </div>
+</div>
+
+{% if missing_persons %}
+<div class="cases-grid">
+    {% for person in missing_persons %}
+    <div class="case-card" onclick="window.location.href='{{ url_for('main.person_detail', person_id=person.id) }}'">
+        {% if person.photos.first() %}
+        <img src="{{ url_for('static', filename='uploads/' + person.photos.first().filename) }}" alt="{{ person.full_name }}" class="case-image">
+        {% else %}
+        <div class="case-image">
+            <i class="fas fa-user"></i>
+        </div>
+        {% endif %}
+        <div class="case-content">
+            <h3 class="case-name">{{ person.full_name }}</h3>
+            <div class="case-info">
+                {% if person.age %}
+                <div class="case-info-item">
+                    <i class="fas fa-birthday-cake"></i>
+                    <span>{{ person.age }} years old</span>
+                </div>
+                {% endif %}
+                {% if person.gender %}
+                <div class="case-info-item">
+                    <i class="fas fa-venus-mars"></i>
+                    <span>{{ person.gender }}</span>
+                </div>
+                {% endif %}
+                <div class="case-info-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>{{ person.last_seen_location }}</span>
+                </div>
+                <div class="case-info-item">
+                    <i class="fas fa-calendar"></i>
+                    <span>{{ person.last_seen_date.strftime('%b %d, %Y') }}</span>
+                </div>
+            </div>
+            <div class="case-footer">
+                <span class="case-status">{{ person.status.value|upper }}</span>
+                <span style="color: var(--text-muted); font-size: 0.85rem;">
+                    <i class="fas fa-eye"></i> {{ person.view_count }} views
+                </span>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% if pagination.pages > 1 %}
+<div class="pagination">
+    {% if pagination.has_prev %}
+    <a href="{{ url_for('main.browse', page=pagination.prev_num, q=search_query, status=status_filter, gender=gender_filter, sort=sort_by) }}" class="pagination-btn">
+        <i class="fas fa-chevron-left"></i> Previous
+    </a>
+    {% else %}
+    <span class="pagination-btn disabled">
+        <i class="fas fa-chevron-left"></i> Previous
+    </span>
+    {% endif %}
+
+    {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+        {% if page_num %}
+            <a href="{{ url_for('main.browse', page=page_num, q=search_query, status=status_filter, gender=gender_filter, sort=sort_by) }}"
+               class="pagination-btn {% if page_num == pagination.page %}active{% endif %}">
+                {{ page_num }}
+            </a>
+        {% else %}
+            <span class="pagination-btn disabled">...</span>
+        {% endif %}
+    {% endfor %}
+
+    {% if pagination.has_next %}
+    <a href="{{ url_for('main.browse', page=pagination.next_num, q=search_query, status=status_filter, gender=gender_filter, sort=sort_by) }}" class="pagination-btn">
+        Next <i class="fas fa-chevron-right"></i>
+    </a>
+    {% else %}
+    <span class="pagination-btn disabled">
+        Next <i class="fas fa-chevron-right"></i>
+    </span>
+    {% endif %}
+</div>
+{% endif %}
+
+{% else %}
+<div class="no-results">
+    <i class="fas fa-search"></i>
+    <h3>No Results Found</h3>
+    <p>Try adjusting your search criteria</p>
+</div>
+{% endif %}
+{% endblock %}

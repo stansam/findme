@@ -1,0 +1,27 @@
+{% extends "main/base.html" %}
+{% block title %}Edit Profile - FindMe{% endblock %}
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto;">
+    <h1 style="font-size: 2.5rem; margin-bottom: 2rem;">Edit Profile</h1>
+    <div style="background-color: var(--bg-secondary); padding: 2.5rem; border-radius: 12px; border: 1px solid var(--border-color);">
+        <form method="POST" action="{{ url_for('auth.edit_profile') }}">
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-weight: 600;">Full Name</label>
+                <input type="text" name="full_name" value="{{ current_user.full_name or '' }}" style="width: 100%; padding: 0.875rem; background-color: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-primary); font-size: 1rem;">
+            </div>
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-weight: 600;">Phone Number</label>
+                <input type="tel" name="phone_number" value="{{ current_user.phone_number or '' }}" style="width: 100%; padding: 0.875rem; background-color: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-primary); font-size: 1rem;">
+            </div>
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-weight: 600;">Location</label>
+                <input type="text" name="location" value="{{ current_user.location or '' }}" style="width: 100%; padding: 0.875rem; background-color: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-primary); font-size: 1rem;">
+            </div>
+            <div style="display: flex; gap: 1rem;">
+                <a href="{{ url_for('auth.profile') }}" style="flex: 1; padding: 1rem; background-color: var(--bg-tertiary); color: var(--text-secondary); text-decoration: none; border-radius: 6px; text-align: center; font-weight: 600;">Cancel</a>
+                <button type="submit" style="flex: 1; padding: 1rem; background-color: var(--accent-primary); color: var(--text-primary); border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

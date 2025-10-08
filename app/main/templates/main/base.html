@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="FindMe - Missing Persons Database and Reporting System">
+    <meta name="CSRFMETA" content="{{csrf_token()}}">
+
+    <link rel="shortcut icon" href="{{ url_for('static', filename='assets/loc.png') }}" />
+
+    <title>{% block title %}FindMe - Find Missing Persons{% endblock %}</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('main.static', filename='main/css/main.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="app-container">
+        {% include 'components/sidebar.html' %}
+
+        <main class="main-content">
+            <div class="flash-messages" id="flashMessages">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}" role="alert">
+                            <i class="fas fa-{{ 'check-circle' if category == 'success' else 'exclamation-circle' if category == 'error' else 'info-circle' }}"></i>
+                            <span>{{ message }}</span>
+                            <button type="button" class="alert-close" onclick="this.parentElement.remove()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            </div>
+
+            <div class="content-wrapper">
+                {% block content %}{% endblock %}
+            </div>
+
+            {% include 'components/footer.html' %}
+        </main>
+    </div>
+
+    <script src="{{ url_for('main.static', filename='main/js/main.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,70 @@
+{% extends "auth/base.html" %}
+
+{% block title %}FindMe - Resend Verification{% endblock %}
+
+{% block subtitle %}Resend verification email{% endblock %}
+
+{% block extra_css %}
+<link href="{{url_for('auth.static', filename='auth/css/resend_verification.css')}}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div id="resend-form-container">
+    <div class="card-header">
+        <i class="fas fa-envelope-open"></i>
+        <h2>Resend Verification Email</h2>
+        <p>Enter your email address and we'll send you a new verification link.</p>
+    </div>
+
+    <form id="resend-verification-form">
+        <div class="form-group">
+            <label class="form-label">
+                <span class="required">*</span> Email Address
+            </label>
+            <div class="input-group">
+                <input type="email" name="email" class="form-input" placeholder="your@email.com" required autofocus>
+                <i class="fas fa-envelope input-icon"></i>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-paper-plane"></i> Resend Verification Email
+        </button>
+    </form>
+
+    <div class="info-box">
+        <i class="fas fa-exclamation-triangle"></i>
+        <div class="info-box-content">
+            <div class="info-box-title">Important Notes</div>
+            <div class="info-box-text">
+                • Check your spam/junk folder if you don't see the email<br>
+                • Wait a few minutes before requesting another email<br>
+                • Make sure you're using the correct email address
+            </div>
+        </div>
+    </div>
+
+    <div class="back-link">
+        <a href="/auth" class="link">
+            <i class="fas fa-arrow-left"></i> Back to Login
+        </a>
+    </div>
+</div>
+
+<div id="success-message" class="success-message">
+    <i class="fas fa-check-circle success-icon"></i>
+    <div class="success-title">Verification Email Sent!</div>
+    <div class="success-text">
+        We've sent a new verification link to your email address. Please check your inbox and click the link to verify your account.
+        <br><br>
+        The link will expire in 24 hours for security reasons.
+    </div>
+    <a href="/auth" class="btn btn-primary">
+        <i class="fas fa-arrow-left"></i> Return to Login
+    </a>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{url_for('auth.static', filename='auth/js/resend_verification.js')}}"></script>
+{% endblock %}

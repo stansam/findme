@@ -1,0 +1,41 @@
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-section">
+            <h4>About FindMe</h4>
+            <p>A comprehensive platform for reporting and finding missing persons. Help reunite families.</p>
+        </div>
+        <div class="footer-section">
+            <h4>Quick Links</h4>
+            <ul>
+                <li><a href="{{ url_for('main.browse') }}">Browse Cases</a></li>
+                <li><a href="{{ url_for('main.statistics') }}">Statistics</a></li>
+                <li><a href="{{ url_for('main.about') }}">About Us</a></li>
+                <li><a href="{{ url_for('main.contact') }}">Contact</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h4>Resources</h4>
+            <ul>
+                <li><a href="{{url_for('main.safety')}}">Safety Tips</a></li>
+                <li><a href="{{url_for('main.faq')}}">FAQ</a></li>
+                <li><a href="{{url_for('main.privacy')}}">Privacy Policy</a></li>
+                <li><a href="{{url_for('main.terms')}}">Terms of Service</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h4>Emergency Contacts</h4>
+            <ul>
+                <li><i class="fas fa-phone"></i> 911</li>
+                <li><i class="fas fa-phone"></i> National Hotline: 07-800-THE-LOST</li>
+            </ul>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2024 FindMe. All rights reserved.</p>
+    </div>
+</footer>

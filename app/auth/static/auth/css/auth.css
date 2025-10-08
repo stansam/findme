@@ -1,0 +1,240 @@
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.05);
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 12px 20px;
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    border-radius: 8px 8px 0 0;
+}
+
+.tab-btn:hover {
+    color: #e0e0e0;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.tab-btn.active {
+    color: #60a5fa;
+    background: rgba(96, 165, 250, 0.1);
+}
+
+.tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #60a5fa;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    color: #cbd5e1;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.form-label .required {
+    color: #ef4444;
+}
+
+.input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+    left: 14px;
+    color: #64748b;
+    pointer-events: none;
+    transition: color 0.3s;
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px 14px 12px 42px;
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(100, 116, 139, 0.3);
+    border-radius: 10px;
+    color: #e0e0e0;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #60a5fa;
+    background: rgba(15, 23, 42, 0.8);
+}
+
+.form-input:focus + .input-icon {
+    color: #60a5fa;
+}
+
+.form-input::placeholder {
+    color: #64748b;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 14px;
+    color: #64748b;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.toggle-password:hover {
+    color: #94a3b8;
+}
+
+.form-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.form-checkbox input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #60a5fa;
+}
+
+.form-checkbox label {
+    color: #cbd5e1;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.btn {
+    width: 100%;
+    padding: 13px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+    transform: translateY(-1px);
+}
+
+.btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin: 25px 0;
+    color: #64748b;
+    font-size: 0.85rem;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(100, 116, 139, 0.3);
+}
+
+.link {
+    color: #60a5fa;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s;
+}
+
+.link:hover {
+    color: #93c5fd;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-muted {
+    color: #94a3b8;
+    font-size: 0.9rem;
+}
+
+.password-strength {
+    height: 4px;
+    background: rgba(100, 116, 139, 0.3);
+    border-radius: 2px;
+    margin-top: 8px;
+    overflow: hidden;
+}
+
+.password-strength-bar {
+    height: 100%;
+    width: 0;
+    transition: all 0.3s;
+    border-radius: 2px;
+}
+
+.strength-weak { width: 33%; background: #ef4444; }
+.strength-medium { width: 66%; background: #f59e0b; }
+.strength-strong { width: 100%; background: #22c55e; }
+
+.password-hint {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-top: 6px;
+}

@@ -1,0 +1,136 @@
+{% extends "auth/base.html" %}
+
+{% block title %}FindMe - Login or Register{% endblock %}
+
+{% block extra_css %}
+<link href="{{url_for('auth.static', filename='auth/css/auth.css')}}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="tabs">
+    <button class="tab-btn active" data-tab="login">
+        <i class="fas fa-sign-in-alt"></i> Login
+    </button>
+    <button class="tab-btn" data-tab="register">
+        <i class="fas fa-user-plus"></i> Register
+    </button>
+</div>
+
+<!-- Login Form -->
+<div class="tab-content active" id="login-tab">
+    <form id="login-form">
+        <div class="form-group">
+            <label class="form-label">
+                <span class="required">*</span> Email or Username
+            </label>
+            <div class="input-group">
+                <input type="text" name="login" class="form-input" placeholder="Enter your email or username" required>
+                <i class="fas fa-user input-icon"></i>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">
+                <span class="required">*</span> Password
+            </label>
+            <div class="input-group">
+                <input type="password" name="password" class="form-input" placeholder="Enter your password" required>
+                <i class="fas fa-lock input-icon"></i>
+                <i class="fas fa-eye toggle-password" onclick="togglePassword(this)"></i>
+            </div>
+        </div>
+
+        <div class="form-group" style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="form-checkbox">
+                <input type="checkbox" id="remember-me" name="remember">
+                <label for="remember-me">Remember me</label>
+            </div>
+            <a href="/auth/forgot-password" class="link">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-sign-in-alt"></i> Login
+        </button>
+    </form>
+</div>
+
+<!-- Register Form -->
+<div class="tab-content" id="register-tab">
+    <form id="register-form">
+        <div class="form-group">
+            <label class="form-label">
+                <span class="required">*</span> Username
+            </label>
+            <div class="input-group">
+                <input type="text" name="username" class="form-input" placeholder="Choose a username" required>
+                <i class="fas fa-user input-icon"></i>
+            </div>
+            <div class="password-hint">3-80 characters, letters, numbers, and underscores only</div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">
+                <span class="required">*</span> Email
+            </label>
+            <div class="input-group">
+                <input type="email" name="email" class="form-input" placeholder="your@email.com" required>
+                <i class="fas fa-envelope input-icon"></i>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">
+                <span class="required">*</span> Password
+            </label>
+            <div class="input-group">
+                <input type="password" name="password" class="form-input" placeholder="Create a strong password" required onkeyup="checkPasswordStrength(this)">
+                <i class="fas fa-lock input-icon"></i>
+                <i class="fas fa-eye toggle-password" onclick="togglePassword(this)"></i>
+            </div>
+            <div class="password-strength">
+                <div class="password-strength-bar" id="strength-bar"></div>
+            </div>
+            <div class="password-hint">Minimum 8 characters</div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <div class="input-group">
+                <input type="text" name="full_name" class="form-input" placeholder="Your full name (optional)">
+                <i class="fas fa-id-card input-icon"></i>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Phone Number</label>
+            <div class="input-group">
+                <input type="tel" name="phone_number" class="form-input" placeholder="+1234567890 (optional)">
+                <i class="fas fa-phone input-icon"></i>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Location</label>
+            <div class="input-group">
+                <input type="text" name="location" class="form-input" placeholder="Your location (optional)">
+                <i class="fas fa-map-marker-alt input-icon"></i>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="form-checkbox">
+                <input type="checkbox" id="terms" required>
+                <label for="terms">I agree to the <a href="#" class="link">Terms & Conditions</a></label>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-user-plus"></i> Create Account
+        </button>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{url_for('auth.static', filename='auth/js/auth.js')}}"></script>
+{% endblock %}
