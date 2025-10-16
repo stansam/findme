@@ -240,7 +240,7 @@
                 <div class="stat-item">
                     <i class="fas fa-calendar-plus"></i>
                     <div>
-                        <div class="stat-value">{{ (now() - person.created_at).days }}</div>
+                        <div class="stat-value">{{ (current_time - person.created_at).days }}</div>
                         <div class="stat-label">Days since report</div>
                     </div>
                 </div>

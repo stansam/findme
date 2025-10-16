@@ -95,10 +95,11 @@ def person_detail(person_id):
     ).order_by(desc(SightingReport.sighting_date)).all()
 
     photos = PersonPhoto.query.filter_by(person_id=person_id).all()
-
+    current_time = datetime.now()
     return render_template('main/person_detail.html',
                          person=person,
                          sightings=sightings,
+                         current_time=current_time,
                          photos=photos)
 
 
