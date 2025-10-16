@@ -37,7 +37,7 @@ def send_email(subject, recipient, html_body, text_body=None):
 
 def send_verification_email(email, username, token):
     """Send email verification link"""
-    verification_url = url_for('auth.verify_email', token=token, _external=True)
+    verification_url = url_for('api.verify_email', token=token, _external=True)
     
     subject = "Verify Your Email - Missing Persons Tracker"
     
