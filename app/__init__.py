@@ -38,8 +38,9 @@ def create_app(config_name=None):
         from app import models
         db.create_all()
 
-    from app.cli import init_users
+    from app.cli import init_users, init_sample_data
     init_users.init_app(app)
+    init_sample_data.init_app(app)
 
     return app
 from app import models
@@ -68,6 +69,9 @@ def setup_logging(app):
 def register_blueprints(app):
     from app.main import bp as main_bp
     app.register_blueprint(main_bp)
+
+    from app.admin import bp as admin_bp
+    app.register_blueprint(admin_bp, url_prefix='/admin')
     
     from app.auth import bp as auth_bp
     app.register_blueprint(auth_bp, url_prefix='/auth')

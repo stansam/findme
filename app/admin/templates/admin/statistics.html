@@ -1,0 +1,104 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Statistics{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Statistics</h1>
+    <p class="page-subtitle">View system analytics and trends</p>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Missing Persons by Status</h2>
+    </div>
+    <div style="max-width: 600px; margin: 0 auto;">
+        {% if status_stats %}
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+            {% for status, count in status_stats %}
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <div style="flex: 0 0 150px; font-weight: 500;">
+                    <span class="badge badge-{{ 'warning' if status.value == 'missing' else 'success' if status.value == 'found' else 'info' }}">
+                        {{ status.value }}
+                    </span>
+                </div>
+                <div style="flex: 1; background: var(--bg-tertiary); border-radius: 0.5rem; height: 30px; position: relative; overflow: hidden;">
+                    <div style="background: var(--accent-primary); height: 100%; width: {{ (count / status_stats|map(attribute='1')|sum * 100)|int }}%; transition: width 0.3s ease;"></div>
+                </div>
+                <div style="flex: 0 0 60px; text-align: right; font-weight: 600;">
+                    {{ count }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p style="text-align: center; color: var(--text-muted); padding: 2rem;">No data available</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Sighting Reports by Status</h2>
+    </div>
+    <div style="max-width: 600px; margin: 0 auto;">
+        {% if report_stats %}
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+            {% for status, count in report_stats %}
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <div style="flex: 0 0 150px; font-weight: 500;">
+                    <span class="badge badge-{{ 'warning' if status.value == 'pending' else 'success' if status.value == 'verified' else 'error' }}">
+                        {{ status.value }}
+                    </span>
+                </div>
+                <div style="flex: 1; background: var(--bg-tertiary); border-radius: 0.5rem; height: 30px; position: relative; overflow: hidden;">
+                    <div style="background: var(--accent-primary); height: 100%; width: {{ (count / report_stats|map(attribute='1')|sum * 100)|int }}%; transition: width 0.3s ease;"></div>
+                </div>
+                <div style="flex: 0 0 60px; text-align: right; font-weight: 600;">
+                    {{ count }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p style="text-align: center; color: var(--text-muted); padding: 2rem;">No data available</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Daily Missing Person Reports (Last 30 Days)</h2>
+    </div>
+    <div>
+        {% if daily_stats %}
+        <div style="overflow-x: auto;">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>New Reports</th>
+                        <th>Visual</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for stat in daily_stats %}
+                    <tr>
+                        <td>{{ stat.date }}</td>
+                        <td><strong>{{ stat.count }}</strong></td>
+                        <td>
+                            <div style="background: var(--bg-tertiary); border-radius: 0.25rem; height: 20px; width: 200px; overflow: hidden;">
+                                <div style="background: var(--accent-primary); height: 100%; width: {{ (stat.count / daily_stats|map(attribute='count')|max * 100)|int }}%; transition: width 0.3s ease;"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p style="text-align: center; color: var(--text-muted); padding: 2rem;">No data available</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

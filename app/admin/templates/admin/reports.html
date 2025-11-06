@@ -1,0 +1,129 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Sighting Reports{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Sighting Reports</h1>
+    <p class="page-subtitle">Review and manage sighting reports</p>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Filter Reports</h2>
+    </div>
+    <form method="GET" class="search-bar">
+        <select name="status" class="form-select" style="max-width: 200px;">
+            <option value="">All Statuses</option>
+            <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
+            <option value="verified" {% if status_filter == 'verified' %}selected{% endif %}>Verified</option>
+            <option value="rejected" {% if status_filter == 'rejected' %}selected{% endif %}>Rejected</option>
+        </select>
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-filter"></i> Filter
+        </button>
+    </form>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">All Reports ({{ reports.total }})</h2>
+    </div>
+    <div class="table-container">
+        {% if reports.items %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Missing Person</th>
+                    <th>Sighting Location</th>
+                    <th>Sighting Date</th>
+                    <th>Reported By</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for report in reports.items %}
+                <tr>
+                    <td>#{{ report.id }}</td>
+                    <td>
+                        <a href="{{ url_for('admin.missing_person_detail', person_id=report.missing_person_id) }}"
+                           style="color: var(--accent-primary); text-decoration: none;">
+                            {{ report.missing_person.full_name }}
+                        </a>
+                    </td>
+                    <td>{{ report.sighting_location[:40] }}{% if report.sighting_location|length > 40 %}...{% endif %}</td>
+                    <td>{{ report.sighting_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                    <td>
+                        {% if not report.is_anonymous %}
+                        <a href="{{ url_for('admin.user_detail', user_id=report.reported_by) }}"
+                           style="color: var(--accent-primary); text-decoration: none;">
+                            {{ report.reporter.username }}
+                        </a>
+                        {% else %}
+                        <span class="badge badge-secondary">Anonymous</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="badge badge-{{ 'warning' if report.status.value == 'pending' else 'success' if report.status.value == 'verified' else 'error' }}">
+                            {{ report.status.value }}
+                        </span>
+                    </td>
+                    <td>{{ report.created_at.strftime('%Y-%m-%d') }}</td>
+                    <td>
+                        <a href="{{ url_for('admin.report_detail', report_id=report.id) }}"
+                           class="btn btn-secondary btn-sm" title="View Details">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        {% if report.status.value == 'pending' %}
+                        <button onclick="verifyReport({{ report.id }})"
+                                class="btn btn-success btn-sm" title="Verify">
+                            <i class="fas fa-check"></i>
+                        </button>
+                        <button onclick="rejectReport({{ report.id }})"
+                                class="btn btn-danger btn-sm" title="Reject">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% if reports.pages > 1 %}
+        <div class="pagination">
+            {% if reports.has_prev %}
+            <a href="?page={{ reports.prev_num }}&status={{ status_filter }}"
+               class="pagination-btn">
+                <i class="fas fa-chevron-left"></i>
+            </a>
+            {% endif %}
+
+            {% for page in reports.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                {% if page %}
+                <a href="?page={{ page }}&status={{ status_filter }}"
+                   class="pagination-btn {% if page == reports.page %}active{% endif %}">
+                    {{ page }}
+                </a>
+                {% else %}
+                <span class="pagination-btn" disabled>...</span>
+                {% endif %}
+            {% endfor %}
+
+            {% if reports.has_next %}
+            <a href="?page={{ reports.next_num }}&status={{ status_filter }}"
+               class="pagination-btn">
+                <i class="fas fa-chevron-right"></i>
+            </a>
+            {% endif %}
+        </div>
+        {% endif %}
+        {% else %}
+        <p style="text-align: center; color: var(--text-muted); padding: 2rem;">No reports found</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

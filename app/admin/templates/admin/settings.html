@@ -1,0 +1,89 @@
+{% extends "admin/base.html" %}
+
+{% block title %}System Settings{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">System Settings</h1>
+    <p class="page-subtitle">Configure system-wide settings</p>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Application Settings</h2>
+    </div>
+    <div style="max-width: 800px;">
+        {% if settings %}
+        {% for setting in settings %}
+        <div style="margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border-color);">
+            <div style="margin-bottom: 0.5rem;">
+                <label style="font-weight: 600; color: var(--text-primary);">{{ setting.key }}</label>
+                {% if setting.description %}
+                <p style="font-size: 0.875rem; color: var(--text-muted); margin-top: 0.25rem;">
+                    {{ setting.description }}
+                </p>
+                {% endif %}
+            </div>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+                <input type="text" id="setting-{{ setting.key }}"
+                       class="form-input" style="flex: 1;"
+                       value="{{ setting.value or '' }}"
+                       placeholder="Enter value...">
+                <button onclick="saveSetting('{{ setting.key }}')"
+                        class="btn btn-primary">
+                    <i class="fas fa-save"></i> Save
+                </button>
+            </div>
+            <div style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--text-muted);">
+                Last updated: {{ setting.updated_at.strftime('%Y-%m-%d %H:%M') }}
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p style="text-align: center; color: var(--text-muted); padding: 2rem;">No settings configured</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Add New Setting</h2>
+    </div>
+    <div style="max-width: 600px;">
+        <div class="form-group">
+            <label class="form-label">Key</label>
+            <input type="text" id="new-setting-key" class="form-input"
+                   placeholder="setting_key">
+        </div>
+        <div class="form-group">
+            <label class="form-label">Value</label>
+            <input type="text" id="new-setting-value" class="form-input"
+                   placeholder="Setting value">
+        </div>
+        <button onclick="addNewSetting()" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Add Setting
+        </button>
+    </div>
+</div>
+
+<script>
+function saveSetting(key) {
+    const input = document.getElementById('setting-' + key);
+    const value = input.value;
+
+    updateSetting(key, value);
+}
+
+function addNewSetting() {
+    const key = document.getElementById('new-setting-key').value;
+    const value = document.getElementById('new-setting-value').value;
+
+    if (!key) {
+        showNotification('Please enter a setting key', 'error');
+        return;
+    }
+
+    updateSetting(key, value);
+}
+</script>
+{% endblock %}

@@ -1,0 +1,168 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Sighting Report Details{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Sighting Report Details</h1>
+    <p class="page-subtitle">Report #{{ report.id }}</p>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Report Information</h2>
+        <div style="display: flex; gap: 0.5rem;">
+            {% if report.status.value == 'pending' %}
+            <button onclick="verifyReport({{ report.id }})"
+                    class="btn btn-success btn-sm">
+                <i class="fas fa-check"></i> Verify
+            </button>
+            <button onclick="rejectReport({{ report.id }})"
+                    class="btn btn-danger btn-sm">
+                <i class="fas fa-times"></i> Reject
+            </button>
+            {% endif %}
+        </div>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+        <div>
+            <h3 style="margin-bottom: 1rem; color: var(--text-secondary); font-size: 1rem;">Missing Person</h3>
+            <div style="margin-bottom: 1rem;">
+                <label style="color: var(--text-muted); font-size: 0.875rem;">Name</label>
+                <p style="font-weight: 500;">
+                    <a href="{{ url_for('admin.missing_person_detail', person_id=report.missing_person_id) }}"
+                       style="color: var(--accent-primary); text-decoration: none;">
+                        {{ report.missing_person.full_name }}
+                    </a>
+                </p>
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <label style="color: var(--text-muted); font-size: 0.875rem;">Case Number</label>
+                <p style="font-weight: 500;">{{ report.missing_person.case_number or 'N/A' }}</p>
+            </div>
+        </div>
+
+        <div>
+            <h3 style="margin-bottom: 1rem; color: var(--text-secondary); font-size: 1rem;">Reporter</h3>
+            <div style="margin-bottom: 1rem;">
+                <label style="color: var(--text-muted); font-size: 0.875rem;">Reported By</label>
+                <p style="font-weight: 500;">
+                    {% if not report.is_anonymous %}
+                    <a href="{{ url_for('admin.user_detail', user_id=report.reported_by) }}"
+                       style="color: var(--accent-primary); text-decoration: none;">
+                        {{ report.reporter.username }}
+                    </a>
+                    {% else %}
+                    <span class="badge badge-secondary">Anonymous</span>
+                    {% endif %}
+                </p>
+            </div>
+            {% if report.reporter_contact %}
+            <div style="margin-bottom: 1rem;">
+                <label style="color: var(--text-muted); font-size: 0.875rem;">Contact Info</label>
+                <p style="font-weight: 500;">{{ report.reporter_contact }}</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <div>
+            <h3 style="margin-bottom: 1rem; color: var(--text-secondary); font-size: 1rem;">Status</h3>
+            <div style="margin-bottom: 1rem;">
+                <label style="color: var(--text-muted); font-size: 0.875rem;">Report Status</label>
+                <p>
+                    <span class="badge badge-{{ 'warning' if report.status.value == 'pending' else 'success' if report.status.value == 'verified' else 'error' }}">
+                        {{ report.status.value }}
+                    </span>
+                </p>
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <label style="color: var(--text-muted); font-size: 0.875rem;">Submitted</label>
+                <p style="font-weight: 500;">{{ report.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+            </div>
+            {% if report.verified_at %}
+            <div style="margin-bottom: 1rem;">
+                <label style="color: var(--text-muted); font-size: 0.875rem;">Reviewed</label>
+                <p style="font-weight: 500;">{{ report.verified_at.strftime('%Y-%m-%d %H:%M') }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Sighting Details</h2>
+    </div>
+    <div>
+        <div style="margin-bottom: 1.5rem;">
+            <label style="color: var(--text-muted); font-size: 0.875rem;">Sighting Location</label>
+            <p style="font-weight: 500;">{{ report.sighting_location }}</p>
+            {% if report.latitude and report.longitude %}
+            <p style="font-size: 0.875rem; color: var(--text-muted);">
+                Coordinates: {{ report.latitude }}, {{ report.longitude }}
+            </p>
+            {% endif %}
+        </div>
+        <div style="margin-bottom: 1.5rem;">
+            <label style="color: var(--text-muted); font-size: 0.875rem;">Sighting Date & Time</label>
+            <p style="font-weight: 500;">{{ report.sighting_date.strftime('%Y-%m-%d %H:%M') }}</p>
+        </div>
+        <div style="margin-bottom: 1.5rem;">
+            <label style="color: var(--text-muted); font-size: 0.875rem;">Description</label>
+            <p style="font-weight: 500; white-space: pre-line;">{{ report.description }}</p>
+        </div>
+        {% if report.person_condition %}
+        <div style="margin-bottom: 1.5rem;">
+            <label style="color: var(--text-muted); font-size: 0.875rem;">Person's Condition</label>
+            <p style="font-weight: 500;">{{ report.person_condition }}</p>
+        </div>
+        {% endif %}
+        {% if report.accompanied_by %}
+        <div style="margin-bottom: 1.5rem;">
+            <label style="color: var(--text-muted); font-size: 0.875rem;">Accompanied By</label>
+            <p style="font-weight: 500;">{{ report.accompanied_by }}</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% if photos %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Attached Photos ({{ photos|length }})</h2>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem;">
+        {% for photo in photos %}
+        <div style="border: 1px solid var(--border-color); border-radius: 0.5rem; overflow: hidden;">
+            <img src="{{ url_for('static', filename='uploads/' + photo.file_path) }}"
+                 alt="Sighting photo"
+                 style="width: 100%; height: 200px; object-fit: cover;">
+            <div style="padding: 0.5rem; font-size: 0.875rem; color: var(--text-secondary);">
+                Uploaded: {{ photo.uploaded_at.strftime('%Y-%m-%d') }}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% if report.verification_notes %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Verification Notes</h2>
+    </div>
+    <div>
+        <p style="white-space: pre-line;">{{ report.verification_notes }}</p>
+        {% if report.verifier %}
+        <p style="margin-top: 1rem; font-size: 0.875rem; color: var(--text-muted);">
+            Verified by:
+            <a href="{{ url_for('admin.user_detail', user_id=report.verified_by) }}"
+               style="color: var(--accent-primary); text-decoration: none;">
+                {{ report.verifier.username }}
+            </a>
+        </p>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,6 +1,9 @@
 from app.extensions import db
 from app.models.options import MissingPersonStatus
 from datetime import datetime
+import os, random
+from flask import current_app, url_for
+
 
 class MissingPerson(db.Model):
     __tablename__ = 'missing_persons'
@@ -55,6 +58,114 @@ class MissingPerson(db.Model):
                            cascade='all, delete-orphan')
     sighting_reports = db.relationship('SightingReport', backref='missing_person', 
                                       lazy='dynamic', cascade='all, delete-orphan')
+    
+    @property
+    def display_image_url(self):
+        """
+        Returns a usable photo URL or a fallback avatar.
+        - Checks both DB record and actual file existence.
+        - Gracefully handles missing files and OS errors.
+        - Uses gender-based random avatar as fallback.
+        """
+        try:
+            # Use Flask's configured static folder (portable across environments)
+            static_folder = current_app.static_folder
+            upload_dir = os.path.join(static_folder, 'uploads')
+
+            # 1️⃣ Check if the person has an uploaded photo record
+            first_photo = self.photos.first()
+            if first_photo:
+                photo_path = os.path.join(upload_dir, first_photo.filename)
+                if os.path.isfile(photo_path):  # safer and faster than os.path.exists
+                    return url_for('static', filename=f'uploads/{first_photo.filename}')
+
+                # Log the missing file for admin awareness
+                current_app.logger.warning(
+                    f"Photo file missing for MissingPerson ID {self.id}: {photo_path}"
+                )
+
+            # 2️⃣ Build a robust fallback (always succeeds)
+            gender = (self.gender or 'unknown').strip().lower()
+            name_seed = (self.full_name or 'User').split()[0]
+
+            fallback_sources = {
+                'male': [
+                    f"https://api.dicebear.com/9.x/adventurer/png?seed={name_seed}",
+                    f"https://randomuser.me/api/portraits/men/{random.randint(1, 99)}.jpg",
+                ],
+                'female': [
+                    f"https://api.dicebear.com/9.x/adventurer/png?seed={name_seed}",
+                    f"https://randomuser.me/api/portraits/women/{random.randint(1, 99)}.jpg",
+                ],
+                'unknown': [
+                    f"https://api.dicebear.com/9.x/identicon/png?seed={name_seed}",
+                ]
+            }
+
+            # 3️⃣ Pick a random fallback based on gender, or default to unknown
+            url = random.choice(fallback_sources.get(gender, fallback_sources['unknown']))
+
+            # Optional: add a static local fallback if external APIs fail
+            if not url:
+                if gender == 'male':
+                    url = url_for('static', filename='assets/male_placeholder.png')
+
+                elif gender == 'female':
+                    url = url_for('static', filename='assets/missing_placeholder.png')
+                else:
+                    url = url_for('static', filename='assets/blank_face.png')
+            return url
+
+        except Exception as e:
+            # 4️⃣ Catch-all safeguard (should never propagate to Jinja)
+            current_app.logger.error(
+                f"Error resolving display_image_url for MissingPerson ID {self.id}: {e}",
+                exc_info=True
+            )
+            # Always provide a working final fallback
+            return url_for('static', filename='images/default_unknown.png')
+        
+    @property
+    def display_photos(self):
+        """Return up to 4 valid photo URLs or random fallbacks."""
+        upload_dir = os.path.join('app', 'static', 'uploads')
+
+        photos = []
+        if hasattr(self, 'photos') and self.photos:
+            for photo in self.photos:
+                photo_path = os.path.join(upload_dir, photo.filename)
+                if os.path.exists(photo_path):
+                    photos.append(url_for('static', filename=f'uploads/{photo.filename}'))
+
+        # If none exist, generate random placeholders
+        if not photos:
+            base_name = self.full_name.split()[0] if self.full_name else "user"
+            gender = getattr(self, 'gender', 'neutral').lower()
+
+            if gender in ['male', 'm']:
+                api_base = "https://randomuser.me/api/portraits/men/"
+                alt_sources = [
+                    f"https://api.dicebear.com/7.x/adventurer/png?seed={base_name}{i}"
+                    for i in range(1, 5)
+                ]
+            elif gender in ['female', 'f']:
+                api_base = "https://randomuser.me/api/portraits/women/"
+                alt_sources = [
+                    f"https://api.dicebear.com/7.x/adventurer-neutral/png?seed={base_name}{i}"
+                    for i in range(1, 5)
+                ]
+            else:
+                api_base = "https://randomuser.me/api/portraits/lego/"
+                alt_sources = [
+                    f"https://api.dicebear.com/7.x/bottts/png?seed={base_name}{i}"
+                    for i in range(1, 5)
+                ]
+
+            # choose up to 4 images — random user fallback
+            photos = random.sample(alt_sources, min(4, len(alt_sources)))
+
+        return photos
+
     
     def increment_views(self):
         """Increment view counter"""

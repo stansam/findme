@@ -28,12 +28,12 @@
                 {% if photos %}
                 <div class="photo-gallery">
                     <div class="photo-main">
-                        <img src="{{ url_for('static', filename='uploads/' + photos[0].filename) }}" alt="{{ person.full_name }}" id="mainPhoto">
+                        <img src="{{ person.display_photos[0] }}" alt="{{ person.full_name }}" id="mainPhoto">
                     </div>
-                    {% if photos|length > 1 %}
+                    {% if photos.display_photos|length > 1 %}
                     <div class="photo-thumbnails">
-                        {% for photo in photos %}
-                        <img src="{{ url_for('static', filename='uploads/' + photo.filename) }}"
+                        {% for photo in photos.display_photos %}
+                        <img src="{{ photo }}"
                              alt="{{ person.full_name }}"
                              class="photo-thumbnail {% if loop.first %}active{% endif %}"
                              onclick="changeMainPhoto(this.src)">

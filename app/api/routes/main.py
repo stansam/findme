@@ -19,6 +19,7 @@ def create_missing_person():
             full_name=data['full_name'],
             age=data.get('age'),
             gender=data.get('gender'),
+            date_of_birth=datetime.fromisoformat(data['date_of_birth']) if data.get('date_of_birth') else None,
             last_seen_location=data['last_seen_location'],
             last_seen_date=datetime.fromisoformat(data['last_seen_date']),
             last_seen_wearing=data.get('last_seen_wearing'),
@@ -30,6 +31,7 @@ def create_missing_person():
             contact_name=data.get('contact_name'),
             contact_phone=data.get('contact_phone'),
             contact_email=data.get('contact_email'),
+            case_number=data.get('case_number'),
             reported_by=current_user.id
         )
 

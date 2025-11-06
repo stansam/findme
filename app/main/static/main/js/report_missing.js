@@ -74,6 +74,7 @@ function getFormData() {
         age: document.getElementById('age').value || null,
         gender: document.getElementById('gender').value || null,
         date_of_birth: document.getElementById('dateOfBirth').value || null,
+        case_number: document.getElementById('caseNumber').value.trim() || null,
         height: document.getElementById('height').value.trim() || null,
         weight: document.getElementById('weight').value.trim() || null,
         hair_color: document.getElementById('hairColor').value.trim() || null,

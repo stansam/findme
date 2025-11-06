@@ -1,0 +1,109 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Activity Logs{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Activity Logs</h1>
+    <p class="page-subtitle">Monitor system activity and user actions</p>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Filter Logs</h2>
+    </div>
+    <form method="GET" class="search-bar">
+        <input type="text" name="action" class="form-input search-input"
+               placeholder="Search by action..."
+               value="{{ action_filter }}">
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-search"></i> Search
+        </button>
+    </form>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Activity Logs ({{ logs.total }})</h2>
+    </div>
+    <div class="table-container">
+        {% if logs.items %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Timestamp</th>
+                    <th>User</th>
+                    <th>Action</th>
+                    <th>Entity</th>
+                    <th>Description</th>
+                    <th>IP Address</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs.items %}
+                <tr>
+                    <td>#{{ log.id }}</td>
+                    <td>{{ log.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                    <td>
+                        {% if log.user_id %}
+                        <a href="{{ url_for('admin.user_detail', user_id=log.user_id) }}"
+                           style="color: var(--accent-primary); text-decoration: none;">
+                            {{ log.user.username if log.user else 'Unknown' }}
+                        </a>
+                        {% else %}
+                        <span style="color: var(--text-muted);">System</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="badge badge-info">{{ log.action }}</span>
+                    </td>
+                    <td>
+                        {% if log.entity_type %}
+                        {{ log.entity_type }}
+                        {% if log.entity_id %}#{{ log.entity_id }}{% endif %}
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+                    <td>{{ log.description or '-' }}</td>
+                    <td style="font-family: monospace; font-size: 0.875rem;">{{ log.ip_address or '-' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% if logs.pages > 1 %}
+        <div class="pagination">
+            {% if logs.has_prev %}
+            <a href="?page={{ logs.prev_num }}&action={{ action_filter }}"
+               class="pagination-btn">
+                <i class="fas fa-chevron-left"></i>
+            </a>
+            {% endif %}
+
+            {% for page in logs.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                {% if page %}
+                <a href="?page={{ page }}&action={{ action_filter }}"
+                   class="pagination-btn {% if page == logs.page %}active{% endif %}">
+                    {{ page }}
+                </a>
+                {% else %}
+                <span class="pagination-btn" disabled>...</span>
+                {% endif %}
+            {% endfor %}
+
+            {% if logs.has_next %}
+            <a href="?page={{ logs.next_num }}&action={{ action_filter }}"
+               class="pagination-btn">
+                <i class="fas fa-chevron-right"></i>
+            </a>
+            {% endif %}
+        </div>
+        {% endif %}
+        {% else %}
+        <p style="text-align: center; color: var(--text-muted); padding: 2rem;">No activity logs found</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

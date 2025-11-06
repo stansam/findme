@@ -1,0 +1,222 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Missing Person Details - {{ person.full_name }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Missing Person Details</h1>
+    <p class="page-subtitle">{{ person.full_name }}</p>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Personal Information</h2>
+        <div style="display: flex; gap: 0.5rem;">
+            {% if not person.is_verified %}
+            <button onclick="verifyMissingPerson({{ person.id }})"
+                    class="btn btn-success btn-sm">
+                <i class="fas fa-check"></i> Verify
+            </button>
+            {% endif %}
+            <select id="status-select-{{ person.id }}" onchange="updatePersonStatus({{ person.id }})"
+                    class="form-select" style="max-width: 150px;">
+                <option value="missing" {% if person.status.value == 'missing' %}selected{% endif %}>Missing</option>
+                <option value="found" {% if person.status.value == 'found' %}selected{% endif %}>Found</option>
+                <option value="investigating" {% if person.status.value == 'investigating' %}selected{% endif %}>Investigating</option>
+                <option value="closed" {% if person.status.value == 'closed' %}selected{% endif %}>Closed</option>
+            </select>
+        </div>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+        <div>
+            <h3 style="margin-bottom: 1rem; color: var(--text-secondary); font-size: 1rem;">Basic Details</h3>
+            <div style="margin-bottom: 1rem;">
+                <label style="color: var(--text-muted); font-size: 0.875rem;">Full Name</label>
+                <p style="font-weight: 500;">{{ person.full_name }}</p>
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <label style="color: var(--text-muted); font-size: 0.875rem;">Age</label>
+                <p style="font-weight: 500;">{{ person.age or 'Unknown' }}</p>
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <label style="color: var(--text-muted); font-size: 0.875rem;">Gender</label>
+                <p style="font-weight: 500;">{{ person.gender or 'Not specified' }}</p>
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <label style="color: var(--text-muted); font-size: 0.875rem;">Date of Birth</label>
+                <p style="font-weight: 500;">
+                    {{ person.date_of_birth.strftime('%Y-%m-%d') if person.date_of_birth else 'Not provided' }}
+                </p>
+            </div>
+        </div>
+
+        <div>
+            <h3 style="margin-bottom: 1rem; color: var(--text-secondary); font-size: 1rem;">Physical Description</h3>
+            <div style="margin-bottom: 1rem;">
+                <label style="color: var(--text-muted); font-size: 0.875rem;">Height</label>
+                <p style="font-weight: 500;">{{ person.height or 'Not provided' }}</p>
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <label style="color: var(--text-muted); font-size: 0.875rem;">Weight</label>
+                <p style="font-weight: 500;">{{ person.weight or 'Not provided' }}</p>
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <label style="color: var(--text-muted); font-size: 0.875rem;">Hair Color</label>
+                <p style="font-weight: 500;">{{ person.hair_color or 'Not provided' }}</p>
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <label style="color: var(--text-muted); font-size: 0.875rem;">Eye Color</label>
+                <p style="font-weight: 500;">{{ person.eye_color or 'Not provided' }}</p>
+            </div>
+        </div>
+
+        <div>
+            <h3 style="margin-bottom: 1rem; color: var(--text-secondary); font-size: 1rem;">Case Information</h3>
+            <div style="margin-bottom: 1rem;">
+                <label style="color: var(--text-muted); font-size: 0.875rem;">Case Number</label>
+                <p style="font-weight: 500;">{{ person.case_number or 'Not assigned' }}</p>
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <label style="color: var(--text-muted); font-size: 0.875rem;">Status</label>
+                <p>
+                    <span class="badge badge-{{ 'warning' if person.status.value == 'missing' else 'success' if person.status.value == 'found' else 'info' }}">
+                        {{ person.status.value }}
+                    </span>
+                </p>
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <label style="color: var(--text-muted); font-size: 0.875rem;">Verified</label>
+                <p>
+                    <span class="badge badge-{{ 'success' if person.is_verified else 'secondary' }}">
+                        {{ 'Yes' if person.is_verified else 'No' }}
+                    </span>
+                </p>
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <label style="color: var(--text-muted); font-size: 0.875rem;">View Count</label>
+                <p style="font-weight: 500;">{{ person.view_count }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Last Seen Information</h2>
+    </div>
+    <div>
+        <div style="margin-bottom: 1rem;">
+            <label style="color: var(--text-muted); font-size: 0.875rem;">Location</label>
+            <p style="font-weight: 500;">{{ person.last_seen_location }}</p>
+        </div>
+        <div style="margin-bottom: 1rem;">
+            <label style="color: var(--text-muted); font-size: 0.875rem;">Date & Time</label>
+            <p style="font-weight: 500;">{{ person.last_seen_date.strftime('%Y-%m-%d %H:%M') }}</p>
+        </div>
+        <div style="margin-bottom: 1rem;">
+            <label style="color: var(--text-muted); font-size: 0.875rem;">Last Seen Wearing</label>
+            <p style="font-weight: 500;">{{ person.last_seen_wearing or 'Not provided' }}</p>
+        </div>
+        <div style="margin-bottom: 1rem;">
+            <label style="color: var(--text-muted); font-size: 0.875rem;">Circumstances</label>
+            <p style="font-weight: 500;">{{ person.circumstances or 'Not provided' }}</p>
+        </div>
+    </div>
+</div>
+
+{% if photos %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Photos ({{ photos|length }})</h2>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem;">
+        {% for photo in photos %}
+        <div style="border: 1px solid var(--border-color); border-radius: 0.5rem; overflow: hidden;">
+            <img src="{{ url_for('static', filename='uploads/' + photo.file_path) }}"
+                 alt="{{ photo.caption or person.full_name }}"
+                 style="width: 100%; height: 200px; object-fit: cover;">
+            {% if photo.caption %}
+            <div style="padding: 0.5rem; font-size: 0.875rem; color: var(--text-secondary);">
+                {{ photo.caption }}
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">
+            <i class="fas fa-flag"></i> Sighting Reports ({{ sightings|length }})
+        </h2>
+    </div>
+    <div class="table-container">
+        {% if sightings %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Location</th>
+                    <th>Date</th>
+                    <th>Reported By</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sighting in sightings %}
+                <tr>
+                    <td>{{ sighting.sighting_location }}</td>
+                    <td>{{ sighting.sighting_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                    <td>
+                        <a href="{{ url_for('admin.user_detail', user_id=sighting.reported_by) }}"
+                           style="color: var(--accent-primary); text-decoration: none;">
+                            {{ sighting.reporter.username }}
+                        </a>
+                    </td>
+                    <td>
+                        <span class="badge badge-{{ 'warning' if sighting.status.value == 'pending' else 'success' if sighting.status.value == 'verified' else 'error' }}">
+                            {{ sighting.status.value }}
+                        </span>
+                    </td>
+                    <td>
+                        <a href="{{ url_for('admin.report_detail', report_id=sighting.id) }}"
+                           class="btn btn-secondary btn-sm">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p style="text-align: center; color: var(--text-muted); padding: 2rem;">No sighting reports</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Contact Information</h2>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+        <div>
+            <label style="color: var(--text-muted); font-size: 0.875rem;">Contact Name</label>
+            <p style="font-weight: 500;">{{ person.contact_name or 'Not provided' }}</p>
+        </div>
+        <div>
+            <label style="color: var(--text-muted); font-size: 0.875rem;">Phone</label>
+            <p style="font-weight: 500;">{{ person.contact_phone or 'Not provided' }}</p>
+        </div>
+        <div>
+            <label style="color: var(--text-muted); font-size: 0.875rem;">Email</label>
+            <p style="font-weight: 500;">{{ person.contact_email or 'Not provided' }}</p>
+        </div>
+        <div>
+            <label style="color: var(--text-muted); font-size: 0.875rem;">Relationship</label>
+            <p style="font-weight: 500;">{{ person.contact_relationship or 'Not provided' }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

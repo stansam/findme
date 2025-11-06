@@ -1,0 +1,171 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Dashboard</h1>
+    <p class="page-subtitle">Welcome back! Here's what's happening with FindMe.</p>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-header">
+            <div class="stat-icon primary">
+                <i class="fas fa-users"></i>
+            </div>
+        </div>
+        <div class="stat-value">{{ stats.total_users or 0 }}</div>
+        <div class="stat-label">Total Users</div>
+        <div class="stat-meta" style="color: var(--text-muted); font-size: 0.75rem; margin-top: 0.5rem;">
+            <i class="fas fa-arrow-up"></i> {{ stats.recent_users or 0 }} new this month
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-header">
+            <div class="stat-icon warning">
+                <i class="fas fa-user-slash"></i>
+            </div>
+        </div>
+        <div class="stat-value">{{ stats.total_missing or 0 }}</div>
+        <div class="stat-label">Missing Persons</div>
+        <div class="stat-meta" style="color: var(--text-muted); font-size: 0.75rem; margin-top: 0.5rem;">
+            Active cases
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-header">
+            <div class="stat-icon success">
+                <i class="fas fa-user-check"></i>
+            </div>
+        </div>
+        <div class="stat-value">{{ stats.total_found or 0 }}</div>
+        <div class="stat-label">Found Persons</div>
+        <div class="stat-meta" style="color: var(--text-muted); font-size: 0.75rem; margin-top: 0.5rem;">
+            Resolved cases
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-header">
+            <div class="stat-icon error">
+                <i class="fas fa-flag"></i>
+            </div>
+        </div>
+        <div class="stat-value">{{ stats.pending_reports or 0 }}</div>
+        <div class="stat-label">Pending Reports</div>
+        <div class="stat-meta" style="color: var(--text-muted); font-size: 0.75rem; margin-top: 0.5rem;">
+            Require review
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">
+            <i class="fas fa-flag"></i> Recent Sighting Reports
+        </h2>
+        <a href="{{ url_for('admin.reports') }}" class="btn btn-secondary btn-sm">
+            View All <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+    <div class="table-container">
+        {% if stats.recent_reports %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Missing Person</th>
+                    <th>Location</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for report in stats.recent_reports %}
+                <tr>
+                    <td>#{{ report.id }}</td>
+                    <td>
+                        <a href="{{ url_for('admin.missing_person_detail', person_id=report.missing_person_id) }}"
+                           style="color: var(--accent-primary); text-decoration: none;">
+                            {{ report.missing_person.full_name }}
+                        </a>
+                    </td>
+                    <td>{{ report.sighting_location }}</td>
+                    <td>{{ report.sighting_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                    <td>
+                        <span class="badge badge-{{ 'warning' if report.status.value == 'pending' else 'success' if report.status.value == 'verified' else 'error' }}">
+                            {{ report.status.value }}
+                        </span>
+                    </td>
+                    <td>
+                        <a href="{{ url_for('admin.report_detail', report_id=report.id) }}" class="btn btn-secondary btn-sm">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p style="text-align: center; color: var(--text-muted); padding: 2rem;">No recent reports</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">
+            <i class="fas fa-user-slash"></i> Recently Added Missing Persons
+        </h2>
+        <a href="{{ url_for('admin.missing_persons') }}" class="btn btn-secondary btn-sm">
+            View All <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+    <div class="table-container">
+        {% if stats.recent_missing %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Last Seen</th>
+                    <th>Status</th>
+                    <th>Verified</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for person in stats.recent_missing %}
+                <tr>
+                    <td>{{ person.full_name }}</td>
+                    <td>{{ person.age or 'N/A' }}</td>
+                    <td>{{ person.last_seen_location }}</td>
+                    <td>
+                        <span class="badge badge-{{ 'warning' if person.status.value == 'missing' else 'success' if person.status.value == 'found' else 'info' }}">
+                            {{ person.status.value }}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge badge-{{ 'success' if person.is_verified else 'secondary' }}">
+                            {{ 'Yes' if person.is_verified else 'No' }}
+                        </span>
+                    </td>
+                    <td>
+                        <a href="{{ url_for('admin.missing_person_detail', person_id=person.id) }}" class="btn btn-secondary btn-sm">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p style="text-align: center; color: var(--text-muted); padding: 2rem;">No recent missing persons</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

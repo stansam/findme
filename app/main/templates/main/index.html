@@ -457,7 +457,7 @@
         {% for case in recent_cases %}
         <div class="case-card" onclick="window.location.href='{{ url_for('main.person_detail', person_id=case.id) }}'">
             {% if case.photos.first() %}
-            <img src="{{ url_for('static', filename='uploads/' + case.photos.first().filename) }}" alt="{{ case.full_name }}" class="case-image">
+            <img src="{{ case.display_image_url }}" alt="{{ case.full_name }}" class="case-image">
             {% else %}
             <div class="case-image">
                 <i class="fas fa-user"></i>

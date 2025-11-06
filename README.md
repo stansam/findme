@@ -47,6 +47,18 @@ flask db upgrade
 # Create Admin and Test Users
 flask create-test-users
 
+# Load default amounts
+flask load-sample-data
+
+# Customize amounts
+flask load-sample-data --users 30 --persons 100 --sightings 200
+
+# Check statistics
+flask db-stats
+
+# Clear all sample data (with confirmation)
+flask clear-sample-data
+
 # Run Application
 flask run --debug
 ```

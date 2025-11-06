@@ -159,6 +159,9 @@ def login():
         db.session.commit()
         
         login_user(user, remember=remember)
+
+        if user.is_admin():
+            next_url = '/admin'
         
         return jsonify({
             'success': True,

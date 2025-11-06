@@ -1,0 +1,168 @@
+{% extends "admin/base.html" %}
+
+{% block title %}User Details - {{ user.username }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">User Details</h1>
+    <p class="page-subtitle">{{ user.username }}</p>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">User Information</h2>
+        <div style="display: flex; gap: 0.5rem;">
+            {% if user.id != current_user.id %}
+            <button onclick="toggleUserStatus({{ user.id }})"
+                    class="btn btn-{{ 'danger' if user.is_active else 'success' }} btn-sm">
+                <i class="fas fa-{{ 'ban' if user.is_active else 'check' }}"></i>
+                {{ 'Deactivate' if user.is_active else 'Activate' }}
+            </button>
+            {% endif %}
+        </div>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+        <div>
+            <div style="margin-bottom: 1rem;">
+                <label style="color: var(--text-muted); font-size: 0.875rem;">Username</label>
+                <p style="font-weight: 500;">{{ user.username }}</p>
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <label style="color: var(--text-muted); font-size: 0.875rem;">Email</label>
+                <p style="font-weight: 500;">{{ user.email }}</p>
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <label style="color: var(--text-muted); font-size: 0.875rem;">Full Name</label>
+                <p style="font-weight: 500;">{{ user.full_name or 'Not provided' }}</p>
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <label style="color: var(--text-muted); font-size: 0.875rem;">Phone</label>
+                <p style="font-weight: 500;">{{ user.phone_number or 'Not provided' }}</p>
+            </div>
+        </div>
+        <div>
+            <div style="margin-bottom: 1rem;">
+                <label style="color: var(--text-muted); font-size: 0.875rem;">Role</label>
+                <div style="margin-top: 0.5rem;">
+                    {% if user.id != current_user.id %}
+                    <select id="role-select-{{ user.id }}" onchange="changeUserRole({{ user.id }})"
+                            class="form-select" style="max-width: 200px;">
+                        <option value="regular" {% if user.role.value == 'regular' %}selected{% endif %}>Regular</option>
+                        <option value="verified" {% if user.role.value == 'verified' %}selected{% endif %}>Verified</option>
+                        <option value="admin" {% if user.role.value == 'admin' %}selected{% endif %}>Admin</option>
+                    </select>
+                    {% else %}
+                    <span class="badge badge-error">{{ user.role.value }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <label style="color: var(--text-muted); font-size: 0.875rem;">Status</label>
+                <p>
+                    <span class="badge badge-{{ 'success' if user.is_active else 'error' }}">
+                        {{ 'Active' if user.is_active else 'Inactive' }}
+                    </span>
+                </p>
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <label style="color: var(--text-muted); font-size: 0.875rem;">Location</label>
+                <p style="font-weight: 500;">{{ user.location or 'Not provided' }}</p>
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <label style="color: var(--text-muted); font-size: 0.875rem;">Joined</label>
+                <p style="font-weight: 500;">{{ user.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">
+            <i class="fas fa-user-slash"></i> Reported Missing Persons ({{ missing_persons|length }})
+        </h2>
+    </div>
+    <div class="table-container">
+        {% if missing_persons %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Last Seen</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for person in missing_persons %}
+                <tr>
+                    <td>{{ person.full_name }}</td>
+                    <td>{{ person.last_seen_location }}</td>
+                    <td>
+                        <span class="badge badge-{{ 'warning' if person.status.value == 'missing' else 'success' }}">
+                            {{ person.status.value }}
+                        </span>
+                    </td>
+                    <td>{{ person.created_at.strftime('%Y-%m-%d') }}</td>
+                    <td>
+                        <a href="{{ url_for('admin.missing_person_detail', person_id=person.id) }}"
+                           class="btn btn-secondary btn-sm">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p style="text-align: center; color: var(--text-muted); padding: 2rem;">No missing person reports</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">
+            <i class="fas fa-flag"></i> Sighting Reports ({{ sighting_reports|length }})
+        </h2>
+    </div>
+    <div class="table-container">
+        {% if sighting_reports %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Missing Person</th>
+                    <th>Location</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for report in sighting_reports %}
+                <tr>
+                    <td>{{ report.missing_person.full_name }}</td>
+                    <td>{{ report.sighting_location }}</td>
+                    <td>{{ report.sighting_date.strftime('%Y-%m-%d') }}</td>
+                    <td>
+                        <span class="badge badge-{{ 'warning' if report.status.value == 'pending' else 'success' if report.status.value == 'verified' else 'error' }}">
+                            {{ report.status.value }}
+                        </span>
+                    </td>
+                    <td>
+                        <a href="{{ url_for('admin.report_detail', report_id=report.id) }}"
+                           class="btn btn-secondary btn-sm">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p style="text-align: center; color: var(--text-muted); padding: 2rem;">No sighting reports</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
