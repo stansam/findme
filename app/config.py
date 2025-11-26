@@ -27,7 +27,10 @@ class Config:
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SAMESITE = 'Lax'
     
-    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+    MAX_FILE_SIZE = 5 * 1024 * 1024  # 5MB
+    MAX_FILES_PER_UPLOAD = 10
+    IMAGE_MAX_DIMENSION = 2048
     
     BCRYPT_LOG_ROUNDS = 12
 

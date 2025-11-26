@@ -1,0 +1,67 @@
+<div class="sr-photo-modal-overlay" id="srPhotoModalOverlay">
+    <div class="sr-photo-modal">
+        <!-- Header -->
+        <div class="sr-photo-modal-header">
+            <h3>
+                <i class="fas fa-camera"></i>
+                Upload Sighting Photos
+            </h3>
+            <button class="sr-photo-modal-close" onclick="srClosePhotoModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <!-- Body -->
+        <div class="sr-photo-modal-body">
+            <!-- Info Banner -->
+            <div class="sr-info-banner">
+                <i class="fas fa-info-circle"></i>
+                <div class="sr-info-banner-text">
+                    <strong>Tips for Quality Sighting Photos</strong>
+                    <p>• Clear, well-lit photos help verify sightings</p>
+                    <p>• Include context like location markers or landmarks</p>
+                    <p>• Multiple angles provide better documentation</p>
+                </div>
+            </div>
+
+            <!-- Alert Container -->
+            <div id="srAlertContainer"></div>
+
+            <!-- Upload Zone -->
+            <div class="sr-upload-zone" id="srUploadZone" onclick="document.getElementById('srPhotoFileInput').click()">
+                <i class="fas fa-camera-retro"></i>
+                <p><strong>Click to upload</strong> or drag and drop</p>
+                <p class="sr-file-info">PNG, JPG, JPEG, GIF, WEBP (Max 5MB per file, up to 10 files)</p>
+            </div>
+            <input type="file" id="srPhotoFileInput" accept="image/png,image/jpeg,image/jpg,image/gif,image/webp" multiple>
+
+            <!-- Progress Bar -->
+            <div class="sr-progress-container" id="srProgressContainer">
+                <div class="sr-progress-bar">
+                    <div class="sr-progress-fill" id="srProgressFill"></div>
+                </div>
+            </div>
+
+            <!-- Preview Container -->
+            <div class="sr-preview-container" id="srPreviewContainer"></div>
+        </div>
+
+        <!-- Footer -->
+        <div class="sr-photo-modal-footer">
+            <div class="sr-file-count" id="srFileCount">
+                <i class="fas fa-images"></i>
+                <span>0 files selected</span>
+            </div>
+            <div class="sr-btn-group">
+                <button class="sr-btn sr-btn-secondary" onclick="srClosePhotoModal()">
+                    <i class="fas fa-times"></i>
+                    Cancel
+                </button>
+                <button class="sr-btn sr-btn-primary" id="srUploadBtn" onclick="srUploadPhotos()" disabled>
+                    <i class="fas fa-upload"></i>
+                    Upload Photos
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

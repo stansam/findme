@@ -4,6 +4,7 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('main.static', filename='main/css/forms.css') }}">
+<link rel="stylesheet" href="{{ url_for('main.static', filename='main/css/upload_sighting.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -16,7 +17,7 @@
     <div class="person-preview">
         <div class="preview-content">
             {% if person.photos.first() %}
-            <img src="{{ url_for('static', filename='uploads/' + person.photos.first().filename) }}" alt="{{ person.full_name }}">
+            <img src="{{ person.display_photos[0] }}" alt="{{ person.full_name }}">
             {% else %}
             <div class="preview-placeholder"><i class="fas fa-user"></i></div>
             {% endif %}
@@ -79,6 +80,9 @@
     </form>
 </div>
 
+<!-- Photo Upload Modal -->
+{% include 'main/report/upload_sighting.html' %}
+
 <style>
 .person-preview {
     background-color: var(--bg-secondary);
@@ -135,62 +139,5 @@
 }
 </style>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('sightingForm');
-    const isAnonymous = document.getElementById('isAnonymous');
-    const contactFields = document.getElementById('contactFields');
-
-    isAnonymous.addEventListener('change', function() {
-        contactFields.style.display = this.checked ? 'none' : 'block';
-    });
-
-    form.addEventListener('submit', async function(e) {
-        e.preventDefault();
-
-        const formData = {
-            missing_person_id: document.getElementById('missingPersonId').value,
-            sighting_date: document.getElementById('sightingDate').value,
-            sighting_location: document.getElementById('sightingLocation').value,
-            description: document.getElementById('description').value,
-            person_condition: document.getElementById('personCondition').value || null,
-            is_anonymous: document.getElementById('isAnonymous').checked,
-            reporter_contact: document.getElementById('isAnonymous').checked ? null : document.getElementById('reporterContact').value
-        };
-
-        showLoadingOverlay();
-
-        try {
-            const response = await apiRequest('/api/sightings', 'POST', formData);
-
-            hideLoadingOverlay();
-
-            if (response.success) {
-                showAlert('Sighting report submitted successfully!', 'success');
-                setTimeout(() => {
-                    window.location.href = `/person/${formData.missing_person_id}`;
-                }, 1500);
-            }
-        } catch (error) {
-            hideLoadingOverlay();
-            showAlert(error.message || 'Failed to submit sighting', 'error');
-        }
-    });
-});
-
-function showLoadingOverlay() {
-    const overlay = document.createElement('div');
-    overlay.className = 'loading-overlay';
-    overlay.id = 'loadingOverlay';
-    overlay.innerHTML = '<div class="loading-spinner"></div>';
-    document.body.appendChild(overlay);
-}
-
-function hideLoadingOverlay() {
-    const overlay = document.getElementById('loadingOverlay');
-    if (overlay) {
-        overlay.remove();
-    }
-}
-</script>
+<script src="{{ url_for('main.static', filename='main/js/upload_sighting.js') }}"></script>
 {% endblock %}

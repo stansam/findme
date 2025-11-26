@@ -1,0 +1,53 @@
+<div class="mp-photo-modal-overlay" id="mpPhotoModalOverlay">
+    <div class="mp-photo-modal">
+        <!-- Header -->
+        <div class="mp-photo-modal-header">
+            <h3>
+                <i class="fas fa-images"></i>
+                Upload Missing Person Photos
+            </h3>
+            <button class="mp-photo-modal-close" onclick="mpClosePhotoModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <!-- Body -->
+        <div class="mp-photo-modal-body">
+            <!-- Alert Container -->
+            <div id="mpAlertContainer"></div>
+
+            <!-- Upload Zone -->
+            <div class="mp-upload-zone" id="mpUploadZone" onclick="document.getElementById('mpPhotoFileInput').click()">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p><strong>Click to upload</strong> or drag and drop</p>
+                <p class="mp-file-info">PNG, JPG, JPEG, GIF, WEBP (Max 5MB per file, up to 10 files)</p>
+            </div>
+            <input type="file" id="mpPhotoFileInput" accept="image/png,image/jpeg,image/jpg,image/gif,image/webp" multiple>
+
+            <!-- Progress Bar -->
+            <div class="mp-progress-container" id="mpProgressContainer">
+                <div class="mp-progress-bar">
+                    <div class="mp-progress-fill" id="mpProgressFill"></div>
+                </div>
+            </div>
+
+            <!-- Preview Container -->
+            <div class="mp-preview-container" id="mpPreviewContainer"></div>
+        </div>
+
+        <!-- Footer -->
+        <div class="mp-photo-modal-footer">
+            <div class="mp-file-count" id="mpFileCount">0 files selected</div>
+            <div class="mp-btn-group">
+                <button class="mp-btn mp-btn-secondary" onclick="mpClosePhotoModal()">
+                    <i class="fas fa-times"></i>
+                    Cancel
+                </button>
+                <button class="mp-btn mp-btn-primary" id="mpUploadBtn" onclick="mpUploadPhotos()" disabled>
+                    <i class="fas fa-upload"></i>
+                    Upload Photos
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

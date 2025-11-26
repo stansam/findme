@@ -4,6 +4,7 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('main.static', filename='main/css/person_detail.css') }}">
+<link rel="stylesheet" href="{{ url_for('main.static', filename='main/css/upload_missing.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -45,6 +46,9 @@
                 <div class="photo-placeholder">
                     <i class="fas fa-user"></i>
                     <p>No photo available</p>
+                    <button class="btn bnt-primary" onclick="mpOpenPhotoModal({{ person.id }})">
+                        <i class="fas fa-upload"></i> Upload Photos
+                    </button>
                 </div>
                 {% endif %}
             </div>
@@ -123,6 +127,7 @@
                     <h3><i class="fas fa-tshirt"></i> Last Seen Wearing</h3>
                     <p>{{ person.last_seen_wearing }}</p>
                 </div>
+
                 {% endif %}
 
                 {% if person.circumstances %}
@@ -173,6 +178,11 @@
                         <i class="fas fa-map-marker-alt"></i>
                         {{ person.last_seen_location }}
                     </div>
+
+                    <button class="btn bnt-primary" onclick="mpOpenPhotoModal({{ person.id }})">
+                        <i class="fas fa-upload"></i> Upload Photos
+                    </button>
+
                 </div>
             </div>
 
@@ -248,7 +258,7 @@
         </div>
     </div>
 </div>
-
+{% include 'main/report/upload_missing.html' %}
 <script>
 function changeMainPhoto(src) {
     document.getElementById('mainPhoto').src = src;
@@ -271,4 +281,5 @@ function shareCase() {
     }
 }
 </script>
+<script src="{{url_for('main.static', filename='main/js/upload_missing.js')}}"></script>
 {% endblock %}

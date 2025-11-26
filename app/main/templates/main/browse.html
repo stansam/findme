@@ -289,7 +289,7 @@
     {% for person in missing_persons %}
     <div class="case-card" onclick="window.location.href='{{ url_for('main.person_detail', person_id=person.id) }}'">
         {% if person.photos.first() %}
-        <img src="{{ url_for('static', filename='uploads/' + person.photos.first().filename) }}" alt="{{ person.full_name }}" class="case-image">
+        <img src="{{ person.display_photos[0] }}" alt="{{ person.full_name }}" class="case-image">
         {% else %}
         <div class="case-image">
             <i class="fas fa-user"></i>
