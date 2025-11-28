@@ -1,0 +1,865 @@
+/* ========================================
+   FindMe Maps - Custom Styles
+   Dark Theme with Modern UI Elements
+   ======================================== */
+
+:root {
+    --findme-dark-bg: #0f1419;
+    --findme-dark-secondary: #1a1f2e;
+    --findme-dark-card: #1e2433;
+    --findme-dark-border: #2d3748;
+    --findme-text-primary: #e2e8f0;
+    --findme-text-secondary: #a0aec0;
+    --findme-text-muted: #718096;
+    
+    --findme-accent-blue: #3b82f6;
+    --findme-accent-purple: #8b5cf6;
+    --findme-accent-teal: #14b8a6;
+    --findme-accent-orange: #f97316;
+    
+    --findme-status-missing: #ef4444;
+    --findme-status-found: #10b981;
+    --findme-status-investigating: #f59e0b;
+    --findme-status-sighting: #6366f1;
+    --findme-status-minor: #dc2626;
+    
+    --findme-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+    --findme-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+    --findme-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+    
+    --findme-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ========================================
+   Container & Layout
+   ======================================== */
+
+.findme-maps-container {
+    width: 100%;
+    height: calc(100vh - 80px);
+    background: var(--findme-dark-bg);
+    position: relative;
+    overflow: hidden;
+}
+
+/* ========================================
+   Header
+   ======================================== */
+
+.findme-maps-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    background: var(--findme-dark-secondary);
+    border-bottom: 2px solid var(--findme-dark-border);
+    box-shadow: var(--findme-shadow-md);
+    position: relative;
+    z-index: 1000;
+}
+
+.findme-maps-header-left {
+    flex: 1;
+}
+
+.findme-maps-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--findme-text-primary);
+    margin: 0 0 0.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.findme-maps-title i {
+    color: var(--findme-accent-teal);
+    font-size: 1.5rem;
+}
+
+.findme-maps-subtitle {
+    font-size: 0.95rem;
+    color: var(--findme-text-secondary);
+    margin: 0;
+}
+
+.findme-maps-header-right {
+    display: flex;
+    gap: 1rem;
+}
+
+/* ========================================
+   Buttons
+   ======================================== */
+
+.findme-maps-btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--findme-transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: var(--findme-shadow-sm);
+}
+
+.findme-maps-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--findme-shadow-md);
+}
+
+.findme-maps-btn:active {
+    transform: translateY(0);
+}
+
+.findme-maps-btn-stats {
+    background: linear-gradient(135deg, var(--findme-accent-blue), var(--findme-accent-purple));
+    color: white;
+}
+
+.findme-maps-btn-filters {
+    background: var(--findme-dark-card);
+    color: var(--findme-text-primary);
+    border: 2px solid var(--findme-dark-border);
+}
+
+.findme-maps-btn-primary {
+    background: linear-gradient(135deg, var(--findme-accent-teal), var(--findme-accent-blue));
+    color: white;
+}
+
+.findme-maps-btn-secondary {
+    background: var(--findme-dark-card);
+    color: var(--findme-text-secondary);
+    border: 2px solid var(--findme-dark-border);
+}
+
+/* ========================================
+   Filters Panel
+   ======================================== */
+
+.findme-maps-filters-panel {
+    position: absolute;
+    top: 140px;
+    right: 2rem;
+    width: 350px;
+    background: var(--findme-dark-card);
+    border-radius: 12px;
+    box-shadow: var(--findme-shadow-lg);
+    z-index: 999;
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+    transform: translateX(400px);
+    opacity: 0;
+    transition: var(--findme-transition);
+    border: 2px solid var(--findme-dark-border);
+}
+
+.findme-maps-filters-panel.findme-active {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.findme-filters-content {
+    padding: 1.5rem;
+}
+
+.findme-filter-group {
+    margin-bottom: 1.5rem;
+}
+
+.findme-filter-group label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--findme-text-primary);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.findme-filter-group label i {
+    color: var(--findme-accent-teal);
+}
+
+.findme-filter-select,
+.findme-filter-input {
+    width: 100%;
+    padding: 0.75rem;
+    background: var(--findme-dark-secondary);
+    border: 2px solid var(--findme-dark-border);
+    border-radius: 8px;
+    color: var(--findme-text-primary);
+    font-size: 0.95rem;
+    transition: var(--findme-transition);
+}
+
+.findme-filter-select:focus,
+.findme-filter-input:focus {
+    outline: none;
+    border-color: var(--findme-accent-teal);
+    box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+}
+
+.findme-checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.findme-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    color: var(--findme-text-secondary);
+    transition: var(--findme-transition);
+}
+
+.findme-checkbox-label:hover {
+    color: var(--findme-text-primary);
+}
+
+.findme-checkbox-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--findme-accent-teal);
+}
+
+.findme-search-wrapper {
+    position: relative;
+}
+
+.findme-search-clear-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: var(--findme-text-muted);
+    cursor: pointer;
+    padding: 0.5rem;
+    transition: var(--findme-transition);
+}
+
+.findme-search-clear-btn:hover {
+    color: var(--findme-text-primary);
+}
+
+.findme-filter-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.findme-filter-actions .findme-maps-btn {
+    flex: 1;
+}
+
+/* ========================================
+   Statistics Panel
+   ======================================== */
+
+.findme-maps-stats-panel {
+    position: absolute;
+    top: 140px;
+    left: 2rem;
+    width: 400px;
+    background: var(--findme-dark-card);
+    border-radius: 12px;
+    box-shadow: var(--findme-shadow-lg);
+    z-index: 999;
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+    transform: translateX(-450px);
+    opacity: 0;
+    transition: var(--findme-transition);
+    border: 2px solid var(--findme-dark-border);
+}
+
+.findme-maps-stats-panel.findme-active {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.findme-stats-content {
+    padding: 1.5rem;
+    display: grid;
+    gap: 1rem;
+}
+
+.findme-stat-card {
+    background: var(--findme-dark-secondary);
+    border-radius: 10px;
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border: 2px solid var(--findme-dark-border);
+    transition: var(--findme-transition);
+}
+
+.findme-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--findme-shadow-md);
+    border-color: var(--findme-accent-teal);
+}
+
+.findme-stat-card-wide {
+    grid-column: 1 / -1;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.findme-stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.findme-stat-icon-missing {
+    background: rgba(239, 68, 68, 0.15);
+    color: var(--findme-status-missing);
+}
+
+.findme-stat-icon-found {
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--findme-status-found);
+}
+
+.findme-stat-icon-investigating {
+    background: rgba(245, 158, 11, 0.15);
+    color: var(--findme-status-investigating);
+}
+
+.findme-stat-icon-minors {
+    background: rgba(220, 38, 38, 0.15);
+    color: var(--findme-status-minor);
+}
+
+.findme-stat-icon-hotspot {
+    background: rgba(249, 115, 22, 0.15);
+    color: var(--findme-accent-orange);
+}
+
+.findme-stat-info h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--findme-text-primary);
+    margin: 0 0 0.25rem 0;
+}
+
+.findme-stat-info p {
+    font-size: 0.9rem;
+    color: var(--findme-text-secondary);
+    margin: 0;
+}
+
+.findme-hotspots-list {
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.findme-hotspot-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem;
+    background: var(--findme-dark-bg);
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+    border-left: 3px solid var(--findme-accent-orange);
+}
+
+.findme-hotspot-location {
+    color: var(--findme-text-primary);
+    font-weight: 500;
+}
+
+.findme-hotspot-count {
+    color: var(--findme-accent-orange);
+    font-weight: 700;
+}
+
+/* ========================================
+   Map Canvas
+   ======================================== */
+
+.findme-map-wrapper {
+    height: calc(100% - 140px);
+    position: relative;
+}
+
+.findme-map-canvas {
+    width: 100%;
+    height: 100%;
+    background: var(--findme-dark-bg);
+}
+
+/* Leaflet Dark Theme Overrides */
+.leaflet-container {
+    background: #1a1f2e !important;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.leaflet-tile {
+    filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7);
+}
+
+.leaflet-control-zoom {
+    border: 2px solid var(--findme-dark-border) !important;
+    border-radius: 8px !important;
+    overflow: hidden;
+}
+
+.leaflet-control-zoom a {
+    background: var(--findme-dark-card) !important;
+    color: var(--findme-text-primary) !important;
+    border-bottom: 1px solid var(--findme-dark-border) !important;
+}
+
+.leaflet-control-zoom a:hover {
+    background: var(--findme-dark-secondary) !important;
+}
+
+.leaflet-popup-content-wrapper {
+    background: var(--findme-dark-card) !important;
+    color: var(--findme-text-primary) !important;
+    border-radius: 10px !important;
+    box-shadow: var(--findme-shadow-lg) !important;
+    border: 2px solid var(--findme-dark-border) !important;
+}
+
+.leaflet-popup-tip {
+    background: var(--findme-dark-card) !important;
+}
+
+/* ========================================
+   Map Loading
+   ======================================== */
+
+.findme-map-loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 20, 25, 0.95);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.findme-map-loading.findme-hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.findme-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid var(--findme-dark-border);
+    border-top: 4px solid var(--findme-accent-teal);
+    border-radius: 50%;
+    animation: findme-spin 0.8s linear infinite;
+}
+
+@keyframes findme-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.findme-map-loading p {
+    margin-top: 1rem;
+    color: var(--findme-text-secondary);
+    font-size: 1rem;
+}
+
+/* ========================================
+   Map Controls
+   ======================================== */
+
+.findme-map-controls {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 998;
+}
+
+.findme-map-control-btn {
+    width: 45px;
+    height: 45px;
+    background: var(--findme-dark-card);
+    border: 2px solid var(--findme-dark-border);
+    border-radius: 8px;
+    color: var(--findme-text-primary);
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--findme-transition);
+    box-shadow: var(--findme-shadow-sm);
+}
+
+.findme-map-control-btn:hover {
+    background: var(--findme-accent-teal);
+    border-color: var(--findme-accent-teal);
+    transform: scale(1.05);
+}
+
+.findme-map-control-btn:active {
+    transform: scale(0.95);
+}
+
+.findme-map-control-btn.findme-spinning i {
+    animation: findme-spin 0.8s linear infinite;
+}
+
+/* ========================================
+   Map Legend
+   ======================================== */
+
+.findme-map-legend {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    background: var(--findme-dark-card);
+    border: 2px solid var(--findme-dark-border);
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: var(--findme-shadow-md);
+    z-index: 998;
+    min-width: 200px;
+}
+
+.findme-map-legend h4 {
+    margin: 0 0 1rem 0;
+    color: var(--findme-text-primary);
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.findme-map-legend h4 i {
+    color: var(--findme-accent-teal);
+}
+
+.findme-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    color: var(--findme-text-secondary);
+    font-size: 0.9rem;
+}
+
+.findme-legend-item:last-child {
+    margin-bottom: 0;
+}
+
+.findme-legend-marker {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: var(--findme-shadow-sm);
+}
+
+.findme-legend-missing {
+    background: var(--findme-status-missing);
+}
+
+.findme-legend-sighting {
+    background: var(--findme-status-sighting);
+}
+
+.findme-legend-found {
+    background: var(--findme-status-found);
+}
+
+.findme-legend-investigating {
+    background: var(--findme-status-investigating);
+}
+
+.findme-legend-minor {
+    background: var(--findme-status-minor);
+    animation: findme-pulse 2s infinite;
+}
+
+@keyframes findme-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.1); }
+}
+
+/* ========================================
+   Results Counter
+   ======================================== */
+
+.findme-map-results-counter {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: var(--findme-dark-card);
+    border: 2px solid var(--findme-dark-border);
+    border-radius: 8px;
+    padding: 0.75rem 1.25rem;
+    box-shadow: var(--findme-shadow-md);
+    z-index: 998;
+    color: var(--findme-text-primary);
+    font-size: 0.95rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.findme-map-results-counter i {
+    color: var(--findme-accent-teal);
+}
+
+#findmeResultsCount {
+    color: var(--findme-accent-teal);
+    font-size: 1.1rem;
+}
+
+/* ========================================
+   Modal
+   ======================================== */
+
+.findme-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.findme-modal.findme-active {
+    display: flex;
+}
+
+.findme-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(4px);
+}
+
+.findme-modal-content {
+    position: relative;
+    background: var(--findme-dark-card);
+    border-radius: 12px;
+    max-width: 900px;
+    max-height: 90vh;
+    width: 90%;
+    overflow-y: auto;
+    box-shadow: var(--findme-shadow-lg);
+    border: 2px solid var(--findme-dark-border);
+    animation: findme-modal-slide-up 0.3s ease;
+}
+
+@keyframes findme-modal-slide-up {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.findme-modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 40px;
+    height: 40px;
+    background: var(--findme-dark-secondary);
+    border: 2px solid var(--findme-dark-border);
+    border-radius: 8px;
+    color: var(--findme-text-primary);
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--findme-transition);
+    z-index: 1;
+}
+
+.findme-modal-close:hover {
+    background: var(--findme-status-missing);
+    border-color: var(--findme-status-missing);
+}
+
+.findme-modal-body {
+    padding: 2rem;
+}
+
+/* ========================================
+   Toast Notifications
+   ======================================== */
+
+.findme-toast {
+    position: fixed;
+    top: 100px;
+    right: 2rem;
+    background: var(--findme-dark-card);
+    border: 2px solid var(--findme-dark-border);
+    border-radius: 10px;
+    padding: 1rem 1.5rem;
+    box-shadow: var(--findme-shadow-lg);
+    z-index: 10001;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    min-width: 300px;
+    max-width: 500px;
+    transform: translateX(600px);
+    opacity: 0;
+    transition: var(--findme-transition);
+}
+
+.findme-toast.findme-show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.findme-toast-icon {
+    font-size: 1.5rem;
+}
+
+.findme-toast.findme-success {
+    border-left: 4px solid var(--findme-status-found);
+}
+
+.findme-toast.findme-success .findme-toast-icon::before {
+    content: "\f058";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    color: var(--findme-status-found);
+}
+
+.findme-toast.findme-error {
+    border-left: 4px solid var(--findme-status-missing);
+}
+
+.findme-toast.findme-error .findme-toast-icon::before {
+    content: "\f057";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    color: var(--findme-status-missing);
+}
+
+.findme-toast.findme-warning {
+    border-left: 4px solid var(--findme-status-investigating);
+}
+
+.findme-toast.findme-warning .findme-toast-icon::before {
+    content: "\f071";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    color: var(--findme-status-investigating);
+}
+
+.findme-toast.findme-info {
+    border-left: 4px solid var(--findme-accent-blue);
+}
+
+.findme-toast.findme-info .findme-toast-icon::before {
+    content: "\f05a";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    color: var(--findme-accent-blue);
+}
+
+.findme-toast-message {
+    flex: 1;
+    color: var(--findme-text-primary);
+    font-size: 0.95rem;
+}
+
+.findme-toast-close {
+    background: transparent;
+    border: none;
+    color: var(--findme-text-muted);
+    cursor: pointer;
+    padding: 0.25rem;
+    transition: var(--findme-transition);
+}
+
+.findme-toast-close:hover {
+    color: var(--findme-text-primary);
+}
+
+/* ========================================
+   Responsive Design
+   ======================================== */
+
+@media (max-width: 1024px) {
+    .findme-maps-filters-panel,
+    .findme-maps-stats-panel {
+        width: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .findme-maps-header {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+    }
+    
+    .findme-maps-header-right {
+        width: 100%;
+    }
+    
+    .findme-maps-btn {
+        flex: 1;
+    }
+    
+    .findme-maps-filters-panel,
+    .findme-maps-stats-panel {
+        width: calc(100% - 2rem);
+        left: 1rem;
+        right: 1rem;
+        top: 180px;
+    }
+    
+    .findme-map-legend {
+        font-size: 0.85rem;
+        padding: 0.75rem;
+    }
+    
+    .findme-toast {
+        right: 1rem;
+        left: 1rem;
+        min-width: auto;
+    }
+}

@@ -1,0 +1,283 @@
+{% extends "main/base.html" %}
+
+{% block title %}Interactive Map - FindMe{% endblock %}
+
+{% block extra_css %}
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+<!-- Leaflet MarkerCluster CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css" />
+<!-- Leaflet Awesome Markers CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.min.css" />
+<!-- Custom Maps CSS -->
+<link rel="stylesheet" href="{{ url_for('main.static', filename='main/css/maps.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="findme-maps-container">
+    <!-- Map Header Controls -->
+    <div class="findme-maps-header">
+        <div class="findme-maps-header-left">
+            <h1 class="findme-maps-title">
+                <i class="fas fa-map-marked-alt"></i> Interactive Missing Persons Map
+            </h1>
+            <p class="findme-maps-subtitle">Real-time visualization of missing persons and verified sightings</p>
+        </div>
+        <div class="findme-maps-header-right">
+            <button class="findme-maps-btn findme-maps-btn-stats" id="findmeToggleStatsBtn">
+                <i class="fas fa-chart-bar"></i> Statistics
+            </button>
+            <button class="findme-maps-btn findme-maps-btn-filters" id="findmeToggleFiltersBtn">
+                <i class="fas fa-filter"></i> Filters
+            </button>
+        </div>
+    </div>
+
+    <!-- Filters Panel -->
+    <div class="findme-maps-filters-panel" id="findmeFiltersPanel">
+        <div class="findme-filters-content">
+            <div class="findme-filter-group">
+                <label for="findmeStatusFilter">
+                    <i class="fas fa-info-circle"></i> Case Status
+                </label>
+                <select id="findmeStatusFilter" class="findme-filter-select">
+                    <option value="all">All Cases</option>
+                    <option value="missing" selected>Missing</option>
+                    <option value="found">Found</option>
+                    <option value="investigating">Investigating</option>
+                    <option value="closed">Closed</option>
+                </select>
+            </div>
+
+            <div class="findme-filter-group">
+                <label for="findmeDaysFilter">
+                    <i class="fas fa-calendar-alt"></i> Time Period
+                </label>
+                <select id="findmeDaysFilter" class="findme-filter-select">
+                    <option value="all">All Time</option>
+                    <option value="7">Last 7 Days</option>
+                    <option value="30" selected>Last 30 Days</option>
+                    <option value="90">Last 90 Days</option>
+                    <option value="365">Last Year</option>
+                </select>
+            </div>
+
+            <div class="findme-filter-group">
+                <label>
+                    <i class="fas fa-eye"></i> Display Options
+                </label>
+                <div class="findme-checkbox-group">
+                    <label class="findme-checkbox-label">
+                        <input type="checkbox" id="findmeShowSightings" checked>
+                        <span>Show Verified Sightings</span>
+                    </label>
+                    <label class="findme-checkbox-label">
+                        <input type="checkbox" id="findmeShowMinorsOnly">
+                        <span>Minors Only</span>
+                    </label>
+                    <label class="findme-checkbox-label">
+                        <input type="checkbox" id="findmeShowClusters" checked>
+                        <span>Cluster Markers</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="findme-filter-group">
+                <label for="findmeSearchInput">
+                    <i class="fas fa-search"></i> Search
+                </label>
+                <div class="findme-search-wrapper">
+                    <input type="text" id="findmeSearchInput" class="findme-filter-input" 
+                           placeholder="Search by name, location, case number...">
+                    <button class="findme-search-clear-btn" id="findmeSearchClearBtn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="findme-filter-actions">
+                <button class="findme-maps-btn findme-maps-btn-primary" id="findmeApplyFiltersBtn">
+                    <i class="fas fa-check"></i> Apply Filters
+                </button>
+                <button class="findme-maps-btn findme-maps-btn-secondary" id="findmeResetFiltersBtn">
+                    <i class="fas fa-redo"></i> Reset
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Panel -->
+    <div class="findme-maps-stats-panel" id="findmeStatsPanel">
+        <div class="findme-stats-content">
+            <div class="findme-stat-card">
+                <div class="findme-stat-icon findme-stat-icon-missing">
+                    <i class="fas fa-user-slash"></i>
+                </div>
+                <div class="findme-stat-info">
+                    <h3 id="findmeStatActiveCases">-</h3>
+                    <p>Active Cases</p>
+                </div>
+            </div>
+
+            <div class="findme-stat-card">
+                <div class="findme-stat-icon findme-stat-icon-found">
+                    <i class="fas fa-user-check"></i>
+                </div>
+                <div class="findme-stat-info">
+                    <h3 id="findmeStatFound">-</h3>
+                    <p>Found</p>
+                </div>
+            </div>
+
+            <div class="findme-stat-card">
+                <div class="findme-stat-icon findme-stat-icon-investigating">
+                    <i class="fas fa-search-location"></i>
+                </div>
+                <div class="findme-stat-info">
+                    <h3 id="findmeStatInvestigating">-</h3>
+                    <p>Investigating</p>
+                </div>
+            </div>
+
+            <div class="findme-stat-card">
+                <div class="findme-stat-icon findme-stat-icon-minors">
+                    <i class="fas fa-child"></i>
+                </div>
+                <div class="findme-stat-info">
+                    <h3 id="findmeStatMinors">-</h3>
+                    <p>Missing Minors</p>
+                </div>
+            </div>
+
+            <div class="findme-stat-card findme-stat-card-wide">
+                <div class="findme-stat-icon findme-stat-icon-hotspot">
+                    <i class="fas fa-fire"></i>
+                </div>
+                <div class="findme-stat-info">
+                    <h3>Hotspot Areas</h3>
+                    <div id="findmeHotspotsList" class="findme-hotspots-list">
+                        <p class="findme-loading-text">Loading...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Map Container -->
+    <div class="findme-map-wrapper">
+        <div id="findmeMainMap" class="findme-map-canvas"></div>
+        
+        <!-- Map Loading Overlay -->
+        <div class="findme-map-loading" id="findmeMapLoading">
+            <div class="findme-spinner"></div>
+            <p>Loading map data...</p>
+        </div>
+
+        <!-- Map Controls Overlay -->
+        <div class="findme-map-controls">
+            <button class="findme-map-control-btn" id="findmeLocateMeBtn" title="Find My Location">
+                <i class="fas fa-crosshairs"></i>
+            </button>
+            <button class="findme-map-control-btn" id="findmeFullscreenBtn" title="Toggle Fullscreen">
+                <i class="fas fa-expand"></i>
+            </button>
+            <button class="findme-map-control-btn" id="findmeRefreshMapBtn" title="Refresh Map">
+                <i class="fas fa-sync-alt"></i>
+            </button>
+        </div>
+
+        <!-- Map Legend -->
+        <div class="findme-map-legend">
+            <h4><i class="fas fa-map-signs"></i> Legend</h4>
+            <div class="findme-legend-item">
+                <span class="findme-legend-marker findme-legend-missing"></span>
+                <span>Missing Person</span>
+            </div>
+            <div class="findme-legend-item">
+                <span class="findme-legend-marker findme-legend-sighting"></span>
+                <span>Verified Sighting</span>
+            </div>
+            <div class="findme-legend-item">
+                <span class="findme-legend-marker findme-legend-found"></span>
+                <span>Found (Safe)</span>
+            </div>
+            <div class="findme-legend-item">
+                <span class="findme-legend-marker findme-legend-investigating"></span>
+                <span>Under Investigation</span>
+            </div>
+            <div class="findme-legend-item">
+                <span class="findme-legend-marker findme-legend-minor"></span>
+                <span>Minor Alert</span>
+            </div>
+        </div>
+
+        <!-- Results Counter -->
+        <div class="findme-map-results-counter" id="findmeResultsCounter">
+            <i class="fas fa-map-marker-alt"></i>
+            <span id="findmeResultsCount">0</span> markers displayed
+        </div>
+    </div>
+
+    <!-- Person Details Modal -->
+    <div class="findme-modal" id="findmePersonModal">
+        <div class="findme-modal-overlay" id="findmePersonModalOverlay"></div>
+        <div class="findme-modal-content">
+            <button class="findme-modal-close" id="findmePersonModalClose">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="findme-modal-body" id="findmePersonModalBody">
+                <!-- Dynamic content loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Location Search Modal -->
+    <div class="findme-search-location-panel">
+        <div class="findme-search-location-input-wrapper">
+            <input type="text" id="findmeLocationSearchInput" 
+                   class="findme-location-search-input" 
+                   placeholder="Search for a location...">
+            <button class="findme-location-search-btn" id="findmeLocationSearchBtn">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+        <div id="findmeLocationSearchResults" class="findme-location-search-results"></div>
+    </div>
+
+    <!-- Nearby Search Panel -->
+    <div class="findme-nearby-panel" id="findmeNearbyPanel">
+        <h3><i class="fas fa-compass"></i> Search Nearby Cases</h3>
+        <p class="findme-nearby-description">Find missing persons within a radius</p>
+        <div class="findme-nearby-controls">
+            <label for="findmeNearbyRadius">Radius (km)</label>
+            <input type="range" id="findmeNearbyRadius" min="1" max="50" value="10" step="1">
+            <span id="findmeNearbyRadiusValue">10 km</span>
+        </div>
+        <button class="findme-maps-btn findme-maps-btn-primary" id="findmeSearchNearbyBtn">
+            <i class="fas fa-location-arrow"></i> Search from Current Location
+        </button>
+        <div id="findmeNearbyResults" class="findme-nearby-results"></div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="findme-toast" id="findmeToast">
+        <div class="findme-toast-icon" id="findmeToastIcon"></div>
+        <div class="findme-toast-message" id="findmeToastMessage"></div>
+        <button class="findme-toast-close" id="findmeToastClose">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Leaflet JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<!-- Leaflet MarkerCluster JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.min.js"></script>
+<!-- Leaflet Awesome Markers JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.min.js"></script>
+<!-- Custom Maps JS -->
+<script src="{{ url_for('main.static', filename='main/js/maps.js') }}"></script>
+{% endblock %}

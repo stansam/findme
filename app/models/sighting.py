@@ -66,6 +66,30 @@ class SightingPhoto(db.Model):
     mime_type = db.Column(db.String(50), nullable=True)
     
     uploaded_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
+
+    def get_display_url(self):
+        """
+        Returns the local static URL if the file exists on the server.
+        Otherwise, returns a fallback image from an external API.
+        """
+        from flask import url_for
+        import os
+        try:
+            # 1. Construct the absolute file system path to check existence
+            # Assuming 'static' is your static folder and file_path is relative to it
+            full_path = os.path.join('static', self.file_path)
+
+            # 2. Check if file exists locally
+            if os.path.exists(full_path):
+                return url_for('static', filename=self.file_path)
+            
+        except Exception:
+            # Fallback if contexts aren't set up or pathing fails
+            pass
+
+        # 3. Return API Fallback Image if local file is missing
+        # We use the photo ID as a 'seed' so the image is consistent for this specific record
+        return f"https://picsum.photos/seed/{self.id}/800/600"
     
     def __repr__(self):
         return f'<SightingPhoto {self.filename}>'

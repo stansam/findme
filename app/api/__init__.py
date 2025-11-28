@@ -2,4 +2,4 @@ from flask import Blueprint
 
 bp = Blueprint("api", __name__)
 
-from app.api.routes import auth, main, upload
+from app.api.routes import auth, main, upload, map

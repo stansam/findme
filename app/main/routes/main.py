@@ -163,7 +163,7 @@ def dashboard():
 
 @bp.route('/map')
 def map_view():
-    return render_template('main/map.html')
+    return render_template('main/maps.html')
 
 
 @bp.route('/statistics')

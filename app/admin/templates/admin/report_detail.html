@@ -134,7 +134,7 @@
     <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem;">
         {% for photo in photos %}
         <div style="border: 1px solid var(--border-color); border-radius: 0.5rem; overflow: hidden;">
-            <img src="{{ url_for('static', filename='uploads/' + photo.file_path) }}"
+            <img src="{{ photo.get_display_url() }}"
                  alt="Sighting photo"
                  style="width: 100%; height: 200px; object-fit: cover;">
             <div style="padding: 0.5rem; font-size: 0.875rem; color: var(--text-secondary);">
